@@ -1,5 +1,20 @@
 <template>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+	<div class="text-end bg-light py-2 px-4">
+    <template v-if="!member">
+        <router-link to="/member/loginForm">로그인</router-link> /
+        <router-link to="/member/registForm"> 회원 가입</router-link> 
+    </template>
+		<template v-else>
+			<span class="me-3">
+        <router-link to="`/member/detailView?userid=${member.userid}`">{{member.name}}</router-link>님
+      </span>
+      <router-link to="`/member/logout`">로그아웃</router-link>
+      <template v-if="member.supervisor === 'Y'">
+        / <router-link to="/member/list">유저관리</router-link>
+      </template>
+		</template>
+	</div>
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <span class="navbar-brand ps-2">TodoList App</span>
       <button class="navbar-toggler" type="button" @click="isNavShow = !isNavShow">
         <span class="navbar-toggler-icon"></span>
@@ -24,10 +39,15 @@
         </ul>
       </div>
     </nav>
+	<!-- 헤더 -->
+	<header class="header border-bottom"
+		style="height: 350px; overflow: hidden;">
+    <router-link to="/">
+     <img :src="logoImage" alt="사이트 배너" style="width: 100%; height: 100%; object-fit: cover;"> 
+    </router-link>
+	</header>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
-const isNavShow = ref(false);
+import logoImage from '@/assets/image/bannerlogo.jpg';
 </script>

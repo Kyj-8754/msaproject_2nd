@@ -1,4 +1,4 @@
-body {
+html, body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
@@ -21,3 +21,19 @@ body {
   .pointer {
     cursor: pointer;
   }
+
+  .main-container {
+	min-height: calc(100vh - 80px); /* 로그인/헤더 제외한 높이 */
+}
+
+.main-area {
+	background-color: #fff;
+	padding: 20px;
+	height: 100%;
+}
+
+.nav-area {
+	background-color: #f8f9fa;
+	height: 100%;
+	padding: 20px;
+}
