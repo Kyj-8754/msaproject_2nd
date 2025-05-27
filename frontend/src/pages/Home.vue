@@ -5,7 +5,7 @@
     <div class="container-fluid main-container">
 		<div class="row h-100">
 			<!-- 우측 본문 -->
-			<main class="col-md-10 main-area">
+			<main class="main-area">
 				<h1><Strong>환영 합니다.</Strong></h1>
 				<div>
                     <p>현재 시간: {{ serverTime }}</p>
@@ -24,7 +24,9 @@
 					<tbody class="text-center">
             <tr v-for="item in pageResponse.list" :key="item.bno">
                 <td>{{item.bno}}</td>
-                <td><a :href="`board/detailView?bno=${item.bno}`">{{item.title}}</a></td>
+                <td class="text-truncate" style="max-width: 100%;">
+                  <router-link :to="{name: 'Board_DetailView', query: {bno: item.bno}}" class="d-inline-block w-100"> {{item.title}} </router-link>
+                </td>
                 <td>{{item.writer}}</td>
                 <td>{{item.reg_date}}</td>
                 <td>{{item.view_count}}</td>
@@ -36,39 +38,17 @@
 		</div>
 	</div>
 </template>
-<script>
-import axios from 'axios'
+<script setup>
+  import {ref, onMounted} from 'vue'
+  import axios from 'axios'
 
-export default {
-  data() {
-    return {
-      serverTime: '',
-      pageResponse: {
-        list: []
-      }
-    };
-  },
-  methods: {
-    updateTime() {
-      const now = new Date();
-      this.serverTime = now.toLocaleString("ko-KR", {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      });
-    }
-  },
-  mounted() {
-    this.updateTime();
-    setInterval(this.updateTime, 1000);
+  const serverTime = ref('')
+  const pageResponse = ref({ list: [] })
 
+  onMounted(() => {
     axios.get('/api/').then(res => {
-      this.serverTime = res.data.serverTime;
-      this.pageResponse = res.data.pageResponse;
-    });
-  }
-}
+      serverTime.value = res.data.serverTime
+      pageResponse.value = res.data.pageResponse
+    })
+  })
 </script>
