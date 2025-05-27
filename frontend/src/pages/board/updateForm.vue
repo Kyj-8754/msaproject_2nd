@@ -55,12 +55,19 @@
 	</div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-        boardDB: {"bno" : "1","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0","content":"임시 글입니다."}
-    };
-  }
-};
+<script setup>
+  import {ref, onMounted} from 'vue'
+  import { useRoute } from 'vue-router'
+  import axios from 'axios'
+
+  const route = useRoute()
+  const bno = route.query.bno
+  const boardDB = ref({ list: [] })
+
+  onMounted(() => {
+    axios.get('/api/board/updateForm', { params: { bno }})
+	.then(res => {
+      boardDB.value = res.data.boardDB
+    })
+  })
 </script>

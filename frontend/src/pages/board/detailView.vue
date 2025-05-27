@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid main-container">
 		<div class="row h-100">
-			 <main class="col-md-10 main-area">
+			 <main class="main-area">
 				<h2>게시물 상세</h2>
 				<!-- 게시글 내용 테이블 -->
 				<div class="container mt-5">
@@ -41,25 +41,27 @@
 		</div>
 	</div>
 </template>
+<script setup>
+  import {ref, onMounted} from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import axios from 'axios'
 
-<script>
-export default {
-  data() {
-    return {
-        boardDB: {"bno" : "1","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0","content":"임시 글입니다."}
-    };
-  },methods: {
-  goToUpdateForm() {
-    const bno = this.boardDB.bno;
-    // 예: 라우팅 이동
-    this.$router.push(`/board/updateForm?bno=${bno}`);
+  const router = useRouter()
+  const route = useRoute()
+  const bno = route.query.bno
+  const boardDB = ref({ list: [] })
 
-    // 또는 API 요청
-    // axios.post('/board/updateForm', { bno })
+  onMounted(() => {
+    axios.get('/api/board/detailView', { params: { bno }})
+	.then(res => {
+      boardDB.value = res.data.boardDB
+    })
+  })
 
-    // 또는 콘솔 확인
-    console.log("수정 페이지로 이동, bno:", bno);
-  }
+  function goToUpdateForm() {
+  router.push({
+    name: 'UpdateForm',
+    query: { bno: boardDB.value.bno }
+  })
 }
-};
 </script>
