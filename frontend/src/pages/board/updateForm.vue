@@ -1,12 +1,10 @@
 <template>
     <div class="container-fluid main-container">
 		<div class="row h-100">
-			<jsp:include page="/WEB-INF/views/common/nav.jsp"/>
-			<!-- 우측 본문 -->
-			<main class="col-md-10 main-area">
+			<main class=" main-area">
 				<h2>게시물 수정</h2>
 				<div class="card-body">
-					<form id="boardForm" method="post">
+					<form id="boardForm">
 						<!-- 레이블 줄 -->
 						<div class="row mb-2">
 							<div class="col-md-6 col-lg-6">
@@ -44,9 +42,9 @@
 						</div>
 						<div class="d-flex justify-content-end">
 							<!-- 수정 -->
-							<button type="submit" formaction="update" id="update" class="btn btn-primary me-2">수정</button>
+							<button type="button" @click="Update" id="update" class="btn btn-primary me-2">수정</button>
 							<!-- 삭제 -->
-							<button type="submit" formaction="delete" id="delete" class="btn btn-danger">삭제하기</button>
+							<button type="button" @click="Delete" id="delete" class="btn btn-danger">삭제하기</button>
 						</div>
 					</form>
 				</div>
@@ -56,18 +54,52 @@
 </template>
 
 <script setup>
-  import {ref, onMounted} from 'vue'
-  import { useRoute } from 'vue-router'
-  import axios from 'axios'
+	import axios from 'axios'
+	import {ref, onMounted} from 'vue'
+	import { useRoute, useRouter } from 'vue-router'
 
-  const route = useRoute()
-  const bno = route.query.bno
-  const boardDB = ref({ list: [] })
+	const router = useRouter()
+	const route = useRoute()
+	const bno = route.query.bno
+	const boardDB = ref({ list: [] })
 
-  onMounted(() => {
-    axios.get('/api/board/updateForm', { params: { bno }})
+	onMounted(() => {
+	axios.get('/api/board/updateForm', { params: { bno }})
 	.then(res => {
-      boardDB.value = res.data.boardDB
-    })
-  })
+	boardDB.value = res.data.boardDB
+		})
+	})
+
+	// 업데이트
+	function Update() {
+		const confirmRegist = confirm("게시물 수정하시겠습니까?")
+		if (!confirmRegist) return
+
+		axios.post('/api/board/update', new FormData(document.getElementById('boardForm')))
+			.then(res => {
+			if (!res.data.error) {
+				alert(res.data.message)
+				router.push({ name: 'Board_DetailView',  query: { bno: boardDB.bno }
+				}) // or 직접 URL로 이동도 가능
+			} else {
+			alert(res.data.message)
+			}
+			})
+	}
+
+	// 삭제
+	function Delete() {
+		const confirmRegist = confirm("게시물 삭제하시겠습니까?")
+		if (!confirmRegist) return
+		
+		axios.post('/api/board/delete', new FormData(document.getElementById('boardForm')))
+			.then(res => {
+				if (!res.data.error) {
+				alert(res.data.message)
+				router.push({ name: 'Board_List'})
+				} else {
+					alert(res.data.message)
+				}
+			})
+	}
 </script>

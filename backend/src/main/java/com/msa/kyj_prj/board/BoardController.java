@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +44,7 @@ public class BoardController {
 	// 게시물 삭제
 	@PostMapping("delete")
 	@ResponseBody
-	public Map<String, Object> delete(@RequestBody Board board) {
+	public Map<String, Object> delete(@ModelAttribute Board board) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Board boardDB = boardService.getBoard(board.getBno());
 
@@ -117,7 +118,7 @@ public class BoardController {
 	// 게시판 수정
 	@PostMapping("update")
 	@ResponseBody
-	public Map<String, Object> update(@RequestBody Board board) {
+	public Map<String, Object> update(@ModelAttribute Board board) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Board boardDB = boardService.getBoard(board.getBno());
 
