@@ -45,7 +45,8 @@ public class SecurityConfig {
 	SecurityFilterChain filterChild(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(authorizeHttpRequests ->
 		                                               // /** -> 루트 경로 이하 모두 허가함 
-			      authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/**")).permitAll());
+			      authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+		.csrf().disable();
 		return http.build();
 	}
 	
