@@ -23,12 +23,12 @@
 						<!-- 입력 필드 줄 -->
 						<div class="row align-items-center mb-4">
 							<div class="col-md-6 col-lg-6">
-								<input type="hidden" name="bno" id="bno" value="${boardDB.bno}">
+								<input type="hidden" name="bno" id="bno" :value="boardDB.bno">
 								<input type="text" class="form-control" name="title" id="title"
-									value="${boardDB.title}" required>
+									:value="boardDB.title" required>
 							</div>
 							<div class="col-md-3 col-lg-3">
-								<input type="text" class="form-control" name="writer" id="writer" readonly value="${boardDB.writer}">
+								<input type="text" class="form-control" name="writer" id="writer" readonly :value=boardDB.writer>
 							</div>
 							<div class="col-md-3 col-lg-3">
 								<input type="password" class="form-control" name="passwd"
@@ -40,7 +40,7 @@
 							<textarea class="form-control" name="content" id="content"
 								rows="10"
 								style="resize: none; overflow: auto; max-height: 300px;"
-								required>${boardDB.content}</textarea>
+								required>{{boardDB.content}}</textarea>
 						</div>
 						<div class="d-flex justify-content-end">
 							<!-- 수정 -->
@@ -55,22 +55,12 @@
 	</div>
 </template>
 
-<script setup>
-import { inject, reactive } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-const { addTodo } = inject('actions');
-const todoItem =  reactive({ todo:"", desc:"" })
-
-const addTodoHandler = () => {
-    let { todo } = todoItem;
-    if (!todo || todo.trim()==="") {
-        alert('할일은 반드시 입력해야 합니다');
-        return;
-    }
-    addTodo({ ...todoItem }, ()=>{
-        router.push('/todos')
-    });
-}
+<script>
+export default {
+  data() {
+    return {
+        boardDB: {"bno" : "1","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0","content":"임시 글입니다."}
+    };
+  }
+};
 </script>

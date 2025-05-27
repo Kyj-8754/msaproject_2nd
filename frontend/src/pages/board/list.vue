@@ -1,7 +1,6 @@
 <template>
     <div class="container-fluid main-container">
 		<div class="row h-100">
-			<jsp:include page="/WEB-INF/views/common/nav.jsp"/>
 			<!-- 우측 본문 -->
 			<main class="col-md-10 main-area">
 			<h2>게시물 목록</h2>
@@ -13,14 +12,14 @@
 			</select> -->
 
 			<!-- 현재 페이지 번호 / 전체 페이지 번호 -->
-			(${pageResponse.pageNo}/${pageResponse.totalPage})
+			<!-- (${pageResponse.pageNo}/${pageResponse.totalPage}) -->
 
-			<form action="list?searchValue=${pageResponse.searchValue}"
+			<!-- <form action="list?searchValue=${pageResponse.searchValue}"
 				name="searchID" id="searchID">
 				검색어 : <input type="text" name="searchValue" id="searchValue"
 					value="${pageResponse.searchValue}"> <input type="submit"
 					value="검색">
-			</form>
+			</form> -->
 
 			<table class="table table-striped table-hover table-bordered mt-4">
 				<thead class="table-dark text-center">
@@ -30,28 +29,28 @@
 						<th>작성자</th>
 						<th>등록일</th>
 						<th>조회수</th>
-						<c:if test="${member.supervisor == 'Y'}">
+						<!-- <template v-if="member.supervisor === 'Y'">
 						<th>삭제여부</th>
 						<th>삭제일</th>
-						</c:if>
+						</template> -->
 					</tr>
 				</thead>
 				<tbody class="text-center">
 						<tr v-for="item in pageResponse.list" :key="item">
 							<td>{{item.bno}}</td>
-							<td><a href="detailView?bno=${item.bno}">${item.title}</a></td>
+							<td><a :href="`detailView?bno=${item.bno}`">{{item.title}}</a></td>
 							<td>{{item.writer}}</td>
 							<td>{{item.reg_date}}</td>
 							<td>{{item.view_count}}</td>
-							<div v-if="member.supervisor === 'Y'">
-							<td>{{item.is_deleted}}</td>
-							<td>{{item.deleted_at}}</td>
-							</div>
+							<!-- <template v-if="member.supervisor === 'Y'">
+								<td>{{item.is_deleted}}</td>
+								<td>{{item.deleted_at}}</td>
+							</template> -->
 						</tr>
 				</tbody>
 			</table>
 			<!-- 페이지 처리 -->
-			<div class="d-flex justify-content-center">
+			<!-- <div class="d-flex justify-content-center">
 			<template v-if="pageResponse.prev">
 				<a href="list?pageNo=${pageResponse.startPage-1}&size=${pageResponse.size}
 				<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}
@@ -74,12 +73,26 @@
     </c:if>">
 					다음 </a>
 			</c:if>
-			</div>
+			</div> -->
 		</main>
 	</div>
 </div>
 </template>
 
-<script setup>
-
+<script>
+export default {
+  data() {
+    return {
+      pageResponse: {
+        list: [{"bno" : "1","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0"},
+          {"bno" : "2","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0"},
+          {"bno" : "3","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0"},
+          {"bno" : "4","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0"},
+          {"bno" : "5","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0"},
+          {"bno" : "6","title":"임시 제목","writer":"임시작성자","reg_date":"2025-05-26","view_count":"0"}
+        ]
+      }
+    };
+  },
+};
 </script>

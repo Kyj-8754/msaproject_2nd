@@ -41,9 +41,9 @@
     </nav>
 	<!-- 헤더 -->
 	<header class="header border-bottom"
-		style="height: 350px; overflow: hidden;">
+		style="height: 250px; overflow: hidden;">
     <router-link to="/">
-     <img :src="logoImage" alt="사이트 배너" style="width: 100%; height: 100%; object-fit: cover;"> 
+     <img :src="logoImage" alt="사이트 배너" style="width: 100%; height: auto; object-fit: cover;"> 
     </router-link>
 	</header>
 </template>
