@@ -60,7 +60,7 @@
 
   function goToUpdateForm() {
   router.push({
-    name: 'UpdateForm',
+    name: 'Board_UpdateForm',
     query: { bno: boardDB.value.bno }
   })
 }
