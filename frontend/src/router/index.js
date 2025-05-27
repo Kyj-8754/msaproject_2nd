@@ -1,9 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/pages/Home.vue';
-import About from '@/pages/About.vue';
-import TodoList from '@/pages/TodoList.vue';
-import AddTodo from '@/pages/AddTodo.vue';
-import EditTodo from '@/pages/EditTodo.vue';
 import NotFound from '@/pages/NotFound.vue';
 import Member_LoginForm from '@/pages/member/loginForm.vue';
 import Member_RegistForm from '@/pages/member/registForm.vue';
@@ -20,20 +16,16 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', component: Home },
-        { path: '/about', component: About },
-        { path: '/todos', component: TodoList },
-        { path: '/todos/add', component: AddTodo },
-        { path: '/todos/edit/:id', component: EditTodo },
-        { path: '/member/loginForm', component: Member_LoginForm },
-        { path: '/member/registForm', component: Member_RegistForm },
-        { path: '/member/detailView', component: Member_DetailView },
-        { path: '/member/updateForm', component: Member_UpdateForm },
-        { path: '/member/list', component: Member_List },
-        { path: '/board/detailView', component: Board_DetailView },
-        { path: '/board/list', component: Board_List },
-        { path: '/board/registForm', component: Board_RegistForm },
-        { path: '/board/updateForm', component: Board_UpdateForm },
-        { path: '/:paths(.*)*', component: NotFound },
+        { path: '/member/loginForm', name: 'Member_LoginForm', component: Member_LoginForm },
+        { path: '/member/registForm', name: 'Member_RegistForm', component: Member_RegistForm },
+        { path: '/member/detailView/:id', name: 'Member_DetailView', component: Member_DetailView },
+        { path: '/member/updateForm', name: 'Member_UpdateForm', component: Member_UpdateForm },
+        { path: '/member/list', name: 'Member_List', component: Member_List },
+        { path: '/board/detailView',  name: 'Board_DetailView', component: Board_DetailView },
+        { path: '/board/list', name: 'Board_List', component: Board_List },
+        { path: '/board/registForm', name: 'Board_RegistForm', component: Board_RegistForm },
+        { path: '/board/updateForm', name: 'Board_UpdateForm', component: Board_UpdateForm },
+        { path: '/:paths(.*)*', name: 'NotFound', component: NotFound },
     ]
 })
 
