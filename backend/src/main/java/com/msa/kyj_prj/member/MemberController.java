@@ -82,7 +82,7 @@ public class MemberController {
 		}
 		
 		
-		// 유저 디테일
+		// 유저 상세창
 		@RequestMapping("detailView")
 		public Map<String, Object> detailView(String userid) {
 			Map<String, Object> result = new HashMap<>();
@@ -198,12 +198,12 @@ public class MemberController {
 			//유저 밴처리
 			@PostMapping("ban")
 			@ResponseBody
-			public Map<String, Object> ban(HttpSession session, 
-					@RequestBody Map<String, String> memberban){
+			public Map<String, Object> ban(@RequestBody Map<String, String> memberban){
 				Map<String, Object> result = new HashMap<String, Object>();
-				 Member admin = (Member) session.getAttribute("member");
+				
+				System.out.println(memberban.get("userid"));
 				 // 세션에 관리자 판단 여부 로직
-				if (admin == null || !admin.getSupervisor().equals("Y")) {
+				if (memberban.get("supervisor") == null || !memberban.get("supervisor").equals("Y")) {
 					result.put("success",false);
 					result.put("message", "관리자 권한이 필요합니다.");
 					return result;
@@ -234,22 +234,5 @@ public class MemberController {
 				
 				return result;
 				}
-			
-			//더미 데이터
-			/*
-			 * @RequestMapping("dummy") public void loadDummyData() { for (int i = 1; i <=
-			 * 100; i++) { Member member = new Member(); member.setUserid("dummy" + i);
-			 * member.setPasswd(passwordEncoder.encode("1004")); member.setName("dummy" +
-			 * i); member.setBirthdate("1990-1-1"); member.setRoadaddress("도로명주소 " + i);
-			 * member.setJibunaddress("지번주소 " + i); member.setDetail_add("상세주소 " + i);
-			 * member.setPostcode("0000" + i); member.setPhone_no("010-0000-00" +
-			 * String.format("%02d", i));
-			 * 
-			 * loginService.registForm(member); }
-			 * 
-			 * System.out.println("더미회원 완료"); }
-			 */
-			
-				
 		
 }

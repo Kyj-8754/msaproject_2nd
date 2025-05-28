@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class PageResponseVO {
 	// 목록
 	private List<Member> list;
+	// 전체 멤버 갯수
+	private int totalCount = 0;
 	// 전체 페이지수
 	private int totalPage = 0;
 	// 페이지 네비게이션 바의 시작 페이지 번호
@@ -29,6 +31,7 @@ public class PageResponseVO {
 	
 	public PageResponseVO(List<Member> list, int totalPage, int pageNo, int size, String searchValue) {
 		this.list = list;
+		this.totalCount = totalPage;
 		this.totalPage = (int)Math.ceil((double)totalPage / size);
 		this.pageNo = pageNo;
 		this.size = size;

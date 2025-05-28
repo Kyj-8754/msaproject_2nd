@@ -34,19 +34,19 @@
 					</thead>
 					<tbody>
 						<tr v-for="(item, index) in pageResponse.list" :key="item">
-							<td>{{ index + 1 + (pageResponse.pageNo - 1) * pageResponse.size }}</td>
+							<td>{{ pageResponse.totalCount - index - (pageResponse.pageNo - 1) * pageResponse.size }}</td>
 							<td>
 								<router-link :to="`detailView?userid=${item.userid}`">{{item.userid}}</router-link>
 							</td>
 							<td>{{item.name}}</td>
 							<td>{{item.birthdate}}</td>
 							<td>{{item.supervisor}}</td>
-							<td>{{item.loginTime}}</td>
+							<td>{{item.loginTime?.substring(0, 10)}}</td>
 							<td>
-								<input type="checkbox" class="form-check-input ban-toggle" :data-userid="item.userid" :checked="item.fail_login == 5 ? 'checked' : ''"  :disabled="item.supervisor == 'Y' ? 'disabled' : ''">
+								<input type="checkbox" class="form-check-input ban-toggle" @change="toggleBan(item)" :data-userid="item.userid" :checked="item.fail_login == 5" :disabled="item.supervisor === 'Y'">
 							</td>
 							<td>{{item.is_deleted}}</td>
-							<td>{{item.deleted_at}}</td>
+							<td>{{item.deleted_at?.substring(0, 10)}}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -57,6 +57,7 @@
 					<template v-if="pageResponse.prev">
 						<router-link :to="makeUrl(pageResponse.startPage - 1)">이전 </router-link>
 					</template>
+					&nbsp;
 
 					<template v-for="pageNo in pageRange" :key="pageNo">
 						<router-link :to="{name: 'Member_List', query:{pageNo, size: size,  searchValue: searchValue || undefined}}">
@@ -80,9 +81,11 @@
 </template>
 
 <script setup>
-import { computed, watch, reactive} from 'vue'
+	import { computed, watch, reactive} from 'vue'
 	import axios from 'axios'
 	import { useRouter, useRoute } from 'vue-router'
+	import { useMemberStore } from '@/stores/member'
+	const MemberStore = useMemberStore() // 멤버 정보보
 	const router = useRouter() // 보낼 경로
 	const route = useRoute() // 현재 경로
 	const sizes = [10, 30, 90, 100] // 건수 사이즈 
@@ -93,7 +96,9 @@ import { computed, watch, reactive} from 'vue'
 		next: false,
 		prev: false,
 		startPage: 1,
-		totalPage: 1
+		totalPage: 1,
+		fail_login: 1,
+		totalCount: 1,
 	})
 
 	// size와 pagNo변경시 감지하여 함수 발생
@@ -152,10 +157,10 @@ import { computed, watch, reactive} from 'vue'
 	}
 	// 값 변경시 다시 list 가져오도록 요청
 	function fetchData(pageNo, size, searchValue) {
-	axios.get(`/api/member/list?pageNo=${pageNo}&size=${size}&searchValue=${encodeURIComponent(searchValue || '')}`)
-		.then(res => {
-		Object.assign(pageResponse, res.data.pageResponse)
-		})
+		axios.get(`/api/member/list?pageNo=${pageNo}&size=${size}&searchValue=${encodeURIComponent(searchValue || '')}`)
+			.then(res => {
+			Object.assign(pageResponse, res.data.pageResponse)
+			})
 	}
 
 	// url 변경시 반응
@@ -163,5 +168,33 @@ import { computed, watch, reactive} from 'vue'
 	const base = `list?pageNo=${pageNo}&size=${pageResponse.size}`
 	return pageResponse.searchValue ? `${base}&searchValue=${encodeURIComponent(searchValue)}` : base
 	}
+
+	//밴 시스템 만들기
+	const toggleBan = (item) => {
+		// 원래 값 저장해서 혹여나 실패시 원래값으로 반환하도록
+		const originalFailLogin = item.fail_login;
+		const banned = originalFailLogin === 5 ? 'N' : 'Y';
+
+		axios.post('/api/member/ban', {
+			supervisor: MemberStore.supervisor,
+			userid: item.userid,
+			banned: banned
+		})
+		.then(res => {
+			const result = res.data
+			if (result.success) {
+				alert(result.message)
+				item.fail_login = banned === 'Y' ? 5 : 0
+			} else {
+				alert(result.message)
+				item.fail_login = originalFailLogin;
+			}
+		})
+		.catch(err => {
+			console.error('ban 처리 중 오류:', err)
+			alert('처리 중 오류가 발생했습니다.')
+			item.fail_login = originalFailLogin;
+		})
+	};
 
 </script>
