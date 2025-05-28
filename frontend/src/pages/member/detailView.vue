@@ -48,15 +48,13 @@
 							</template>
 						</tbody>
 					</table>
-					<!-- <c:if test="${memberDB.userid == SessionMember.userid}"> -->
-					<div class="mt-4 d-flex justify-content-center gap-3">
-						<a href="/yj" class="btn btn-outline-primary">메인으로</a> <a
-							href="updateForm?userid=${memberDB.userid}"
-							class="btn btn-primary">회원 수정</a> 
-							<a id="unregist" href="unregister?userid=${memberDB.userid}" class="btn btn-danger">회원
-							탈퇴</a>
-					</div>
-					<!-- </c:if> -->
+					<template v-if="memberDB.userid === memberStore.userid">
+						<div class="mt-4 d-flex justify-content-center gap-3">
+							<router-link :to="{name: 'Home'}"  class="btn btn-outline-primary">메인으로</router-link> 
+							<router-link :to="{name: 'Member_UpdateForm',  query:  {userid: memberDB.userid}}" class="btn btn-primary">회원 수정</router-link> 
+							<a id="unregist" href="unregister?userid=${memberDB.userid}" class="btn btn-danger">회원탈퇴</a>
+						</div>
+					</template>
 				</div>
 			</main>
 		</div>

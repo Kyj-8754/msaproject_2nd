@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,9 +45,6 @@ public class MemberController {
 			System.out.println("insert 결과: " + result);
 			return result == 1;
 		}
-		
-		
-
 
 		// 로그인 처리
 		@PostMapping("login")
@@ -94,30 +92,6 @@ public class MemberController {
 			}
 			result.put("memberDB", memberDB);
 			return result; 
-			}
-		
-		
-		// 유저 업데이트 폼으로 넘어가기
-		@RequestMapping("updateForm")
-		public String updateForm(Model model, String userid, HttpSession session) {
-			if(session == null) {
-				return "redirect:/"; 
-			}
-			
-			//1. 입력값 검증 (java : Controller)
-			if (userid == null || userid.length() == 0) {
-				//jsp로 오류 메시지 출력 
-				return "redirect:/";  
-			}
-			
-			Member member = loginService.getMember(userid);
-			if (member == null) {
-				//jsp로 오류 메시지 출력 
-				return "redirect:/";  
-			}
-			
-			model.addAttribute("member", member);
-			return "member/updateForm";
 			}
 		
 		
@@ -208,23 +182,17 @@ public class MemberController {
 			
 			
 			// 유저 리스트
-			@RequestMapping("list")
-			public String list(Model model, String pageNo, String size, String searchValue, HttpSession session) {
+			@GetMapping("list")
+			@ResponseBody
+			public Map<String, Object> list(String pageNo, String size, String searchValue) {
+				System.out.println("들어옴");
+				Map<String, Object>result = new HashMap<>();
 				
-				if(session == null) {
-					return "redirect:/";
-				}
-				
-				Member member = (Member)session.getAttribute("member");
-				if(member == null || member.getSupervisor().equals("N")) {
-					return "redirect:/";
-				}
-				
-				model.addAttribute("pageResponse",loginService.list(searchValue,
+				result.put("pageResponse",loginService.list(searchValue,
 						Util.parseInt(pageNo, 1),
 						Util.parseInt(size, 10)
 						));
-				return "member/list";
+				return result;
 			}
 			
 			//유저 밴처리

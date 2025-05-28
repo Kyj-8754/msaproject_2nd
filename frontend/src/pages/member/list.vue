@@ -3,24 +3,21 @@
 		<div class="row h-100">
 			<main class="main-area">
 				<h2>회원 관리</h2>
-
-
-				<!-- 건수 : <select name="size" id="size">
-					<c:forTokens items="10,30,90,100" delims="," var="size">
-						<option value="${size}"
-							{pageResponse.size == size ? 'selected' : ''}>${size}</option>
-					</c:forTokens>
-				</select> -->
+				건수 :
+				<select name="size" id="size" v-model="size">
+					<option v-for="size in sizes" :key="size" :value="size">
+						{{ size }}
+					</option>
+				</select>
 
 				<!-- 현재 페이지 번호 / 전체 페이지 번호 -->
-				(${pageResponse.pageNo}/${pageResponse.totalPage})<br />
-
-				<form action="list?searchValue=${pageResponse.searchValue}"
-					name="searchID" id="searchID">
-					검색어 : <input type="text" name="searchValue" id="searchValue"
-						value="${pageResponse.searchValue}"> <input type="submit"
-						value="검색">
+				({{pageResponse.pageNo}}/{{pageResponse.totalPage}})
+				<form @submit.prevent="searchID" :name="searchID" :id="searchID">
+					검색어 : 
+					<input type="text" :name="searchValue" :id="searchValue" v-model="searchValue"> 
+					<input type="submit" value="검색">
 				</form>
+
 				<table class="table table-bordered table-hover text-center align-middle">
 					<thead class="table table-striped table-hover table-bordered align-middle text-center">
 						<tr>
@@ -36,77 +33,135 @@
 						</tr>
 					</thead>
 					<tbody>
-						<!-- <c:forEach items="${pageResponse.list}" var="item"
-							varStatus="status">
-							<tr>
-								<td>${status.count + (pageResponse.pageNo - 1) * pageResponse.size}</td>
-								<td><a href="detailView?userid=${item.userid}">${item.userid}</a></td>
-								<td>${item.name}</td>
-								<td>${item.birthdate}</td>
-								<td>${item.supervisor}</td>
-								<td>${item.loginTime}</td>
-								<td><input type="checkbox"
-									class="form-check-input ban-toggle"
-									data-userid="${item.userid}"
-									${item.fail_login == 5 ? 'checked' : ''}
-									${item.supervisor == 'Y' ? 'disabled' : ''}></td>
-								<td>${item.is_deleted}</td>
-								<td>${item.deleted_at}</td>
-							</tr>
-						</c:forEach> -->
+						<tr v-for="(item, index) in pageResponse.list" :key="item">
+							<td>{{ index + 1 + (pageResponse.pageNo - 1) * pageResponse.size }}</td>
+							<td>
+								<router-link :to="`detailView?userid=${item.userid}`">{{item.userid}}</router-link>
+							</td>
+							<td>{{item.name}}</td>
+							<td>{{item.birthdate}}</td>
+							<td>{{item.supervisor}}</td>
+							<td>{{item.loginTime}}</td>
+							<td>
+								<input type="checkbox" class="form-check-input ban-toggle" :data-userid="item.userid" :checked="item.fail_login == 5 ? 'checked' : ''"  :disabled="item.supervisor == 'Y' ? 'disabled' : ''">
+							</td>
+							<td>{{item.is_deleted}}</td>
+							<td>{{item.deleted_at}}</td>
+						</tr>
 					</tbody>
 				</table>
 				
 		
 	<!-- 페이지 처리 -->
 	<div class="d-flex justify-content-center">
-	<c:if test="${pageResponse.prev}">
-		<a
-			href="list?pageNo=${pageResponse.startPage-1}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>
-      &searchValue=${pageResponse.searchValue}
-    </c:if>">
-			이전 </a>
-	</c:if>
-	<c:forEach begin="${pageResponse.startPage}"
-		end="${pageResponse.endPage}" var="pageNo">
-		<a
-			href="list?pageNo=${pageNo}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}</c:if>">
-			<c:choose>
-				<c:when test="${pageNo == pageResponse.pageNo}">
-					<b>${pageNo}</b>
-				</c:when>
-				<c:otherwise>${pageNo}</c:otherwise>
-			</c:choose>
-		</a>&nbsp;
-	</c:forEach>
-	<c:if test="${pageResponse.next}">
-		<a
-			href="list?pageNo=${pageResponse.endPage+1}&size=${pageResponse.size}<c:if test='${not empty pageResponse.searchValue}'>&searchValue=${pageResponse.searchValue}
-    </c:if>">
-			다음 </a>
-	</c:if>
-	</div>
+					<template v-if="pageResponse.prev">
+						<router-link :to="makeUrl(pageResponse.startPage - 1)">이전 </router-link>
+					</template>
+
+					<template v-for="pageNo in pageRange" :key="pageNo">
+						<router-link :to="{name: 'Member_List', query:{pageNo, size: size,  searchValue: searchValue || undefined}}">
+							<template v-if="pageNo === pageResponse.pageNo">
+								<b>{{ pageNo }}</b>
+							</template>
+							<template v-else>
+								{{ pageNo }}
+							</template>
+						</router-link>
+						&nbsp;
+					</template>
+
+					<template v-if="pageResponse.next">
+						<router-link :to="makeUrl(pageResponse.endPage + 1)">다음</router-link>
+					</template>
+				</div>
 		</main>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { inject, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, watch, reactive} from 'vue'
+	import axios from 'axios'
+	import { useRouter, useRoute } from 'vue-router'
+	const router = useRouter() // 보낼 경로
+	const route = useRoute() // 현재 경로
+	const sizes = [10, 30, 90, 100] // 건수 사이즈 
+	// 초기값 설정
+	const pageResponse = reactive ({ 
+		list: [],
+		endPage: 1,
+		next: false,
+		prev: false,
+		startPage: 1,
+		totalPage: 1
+	})
 
-const router = useRouter();
-const { addTodo } = inject('actions');
-const todoItem =  reactive({ todo:"", desc:"" })
+	// size와 pagNo변경시 감지하여 함수 발생
+	const pageNo = computed(() => parseInt(route.query.pageNo) || 1)
+	const size = computed({
+		get: () => parseInt(route.query.size) || 10,
+		set: (val) => {
+			router.push({
+				name: 'Member_List',
+				query: {
+					...route.query,
+					pageNo: 1, // 사이즈 바꾸면 1페이지로 초기화
+					size: val
+				}
+			})
+		}
+	})
 
-const addTodoHandler = () => {
-    let { todo } = todoItem;
-    if (!todo || todo.trim()==="") {
-        alert('할일은 반드시 입력해야 합니다');
-        return;
-    }
-    addTodo({ ...todoItem }, ()=>{
-        router.push('/todos')
-    });
-}
+	const searchValue = computed({
+		get: () => route.query.searchValue || '',
+		set: (val) => {
+			router.push({
+			name: 'Member_List',
+			query: {
+				...route.query,
+				pageNo: 1,
+				searchValue: val || null
+			}
+			})
+		}
+	})
+	
+	const pageRange = computed(() => {
+	  const range = []
+	  for (let i = pageResponse.startPage; i <= pageResponse.endPage; i++) {
+		range.push(i)
+	  }
+	  return range
+	})
+	
+	watch([pageNo, size, () => route.query.searchValue], ([newPageNo, newSize, newSearch]) => {
+		fetchData(newPageNo, newSize, newSearch)
+	}, 
+	{ immediate: true }
+	)
+	
+	function searchID() {
+		router.push({
+			name: 'Member_List',
+			query: {
+			pageNo: 1, // 검색 시 1페이지로 이동
+			size: size.value,
+			searchValue: pageResponse.searchValue || null
+			}
+		})
+	}
+	// 값 변경시 다시 list 가져오도록 요청
+	function fetchData(pageNo, size, searchValue) {
+	axios.get(`/api/member/list?pageNo=${pageNo}&size=${size}&searchValue=${encodeURIComponent(searchValue || '')}`)
+		.then(res => {
+		Object.assign(pageResponse, res.data.pageResponse)
+		})
+	}
+
+	// url 변경시 반응
+	function makeUrl(pageNo) {
+	const base = `list?pageNo=${pageNo}&size=${pageResponse.size}`
+	return pageResponse.searchValue ? `${base}&searchValue=${encodeURIComponent(searchValue)}` : base
+	}
+
 </script>

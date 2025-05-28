@@ -22,23 +22,20 @@
 						<div class="row align-items-center mb-4">
 							<div class="col-md-6 col-lg-6">
 								<input type="hidden" name="bno" id="bno" :value="boardDB.bno">
-								<input type="text" class="form-control" name="title" id="title"
-									:value="boardDB.title" required>
+								<input type="text" class="form-control" name="title" id="title" :value="boardDB.title" required>
 							</div>
 							<div class="col-md-3 col-lg-3">
 								<input type="text" class="form-control" name="writer" id="writer" readonly :value=boardDB.writer>
 							</div>
 							<div class="col-md-3 col-lg-3">
-								<input type="password" class="form-control" name="passwd"
-									id="passwd" required>
+								<input type="password" class="form-control" name="passwd" id="passwd" required>
 							</div>
 						</div>
 						<div class="mb-4">
 							<label for="content" class="form-label">내용</label>
-							<textarea class="form-control" name="content" id="content"
-								rows="10"
-								style="resize: none; overflow: auto; max-height: 300px;"
-								required>{{boardDB.content}}</textarea>
+							<textarea class="form-control" name="content" id="content" rows="10" style="resize: none; overflow: auto; max-height: 300px;" required>
+								{{boardDB.content}}
+							</textarea>
 						</div>
 						<div class="d-flex justify-content-end">
 							<!-- 수정 -->

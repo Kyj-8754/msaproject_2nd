@@ -15,16 +15,6 @@ import { useMemberStore } from '@/stores/member'
 //     { path: '/:paths(.*)*', name: 'NotFound', component: NotFound },
 // ]
 
-// 멤버 정보 받기
-// const getMember = () =>{
-//     let strMemberInfo = window.localStorage.getItem("MemberInfo");
-//     if(!strMemberInfo){
-//         return { authenticated: false};
-//     }else{
-//         return JSON.parse(window.atob(strMemberInfo));
-//     }
-// }
-
 // 로그인
 const Login = async (userid, passwd, sucessCallback, failCallback) => {
     try {

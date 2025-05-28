@@ -8,7 +8,7 @@
 			<span class="me-3">
         <router-link :to="{ name: 'Member_DetailView', query: {userid : memberStore.userid} }">{{memberStore.userid}}</router-link>님
       </span>
-      <router-link :to="{}" @click.prevent="memberStore.clearMember()">로그아웃</router-link>
+      <router-link :to="{}" @click.prevent="logout">로그아웃</router-link>
       <template v-if="memberStore.supervisor === 'Y'">
         / <router-link :to="{ name: 'Member_List' }">유저관리</router-link>
       </template>
@@ -22,18 +22,18 @@
       <div :class="isNavShow ? 'collapse navbar-collapse show' : 'collapse navbar-collapse'">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link class="nav-link" to="/">
+            <router-link class="nav-link" :to="{ name: 'Home' }">
                 Home
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/about">
-                About
+            <router-link class="nav-link" :to="{ name: 'Board_List' }">
+                BoardList
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/todos">
-                TodoList
+            <router-link class="nav-link":to="{ name: 'Member_List' }">
+                MemberList
             </router-link>
           </li>
         </ul>
@@ -50,7 +50,16 @@
 
 <script setup>
 import { useMemberStore } from '@/stores/member'
+import { logoutProcess } from '@/util/AuthUtil'
 import logoImage from '@/assets/image/bannerlogo.jpg';
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const memberStore = useMemberStore();
+const logout = () => {
+  logoutProcess(() => {
+    router.push({ name: 'Home' });
+  });
+}
+
 </script>
