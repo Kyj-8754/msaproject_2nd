@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.msa.kyj_prj.util.Util;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("member")
 public class MemberController {
@@ -29,21 +30,10 @@ public class MemberController {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-		// 회원 가입 동기
-		@RequestMapping("regist")
-		public String regist(@ModelAttribute Member member) {
-			if(!member.isValid()) {
-				return "redirect:member/registForm?error=true";
-			}
-			
-			loginService.registForm(member);
-			return "redirect:/";
-		}
-		
 		// 유저 가입
 		// 비동기 처리
 		// json으로 받은 값 rest api로 처리
-		@PostMapping("postregi")
+		@PostMapping("regist")
 		@ResponseBody
 		public boolean postRegist(@RequestBody Member member) {
 			String raw = member.getPasswd();
@@ -70,6 +60,8 @@ public class MemberController {
 		      case SUCCESS:
 		        session.setAttribute("member", member_result.getMember());
 		        result.put("status", "SUCCESS");
+		        result.put("supervisor", member_result.getMember().getSupervisor());
+		        result.put("message", member_result.getMember().getName() +  "님 환영합니다.");
 		        break;
 		      case NO_USER:
 		        result.put("status", "NO_USER");
@@ -94,18 +86,14 @@ public class MemberController {
 		
 		// 유저 디테일
 		@RequestMapping("detailView")
-		public String detailView(Model model, String userid, HttpSession session) {
-			
-			Member SessionMember = (Member)session.getAttribute("member");
-			
-			 
+		public Map<String, Object> detailView(String userid) {
+			Map<String, Object> result = new HashMap<>();
 			Member memberDB = loginService.getMember(userid);
 			if (memberDB == null) {
-				return "redirect:/";
+				return result;
 			}
-			model.addAttribute("memberDB", memberDB);
-			model.addAttribute("SessionMember", SessionMember);
-			return "member/detailView"; 
+			result.put("memberDB", memberDB);
+			return result; 
 			}
 		
 		
@@ -184,11 +172,9 @@ public class MemberController {
 		    @ResponseBody
 		    public Map<String, Object> isExistUserId(@RequestBody Member member) {
 				Map<String, Object> map = new HashMap<String, Object>();
-				log.info("member ->" + member);
 				Member memberInfo = loginService.getMember(member.getUserid());
 				
 				map.put("existUserId", memberInfo != null);
-				
 				return map;
 		    }
 			

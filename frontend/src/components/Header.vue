@@ -1,16 +1,16 @@
 <template>
 	<div class="text-end bg-light py-2 px-4">
-    <template v-if="!member">
-        <router-link to="/member/loginForm">로그인</router-link> /
-        <router-link to="/member/registForm"> 회원 가입</router-link> 
+    <template v-if="!memberStore.authenticated">
+        <router-link :to="{ name: 'Member_LoginForm' }">로그인</router-link> /
+        <router-link :to="{ name: 'Member_RegistForm' }"> 회원 가입</router-link> 
     </template>
 		<template v-else>
 			<span class="me-3">
-        <router-link to="`/member/detailView?userid=${member.userid}`">{{member.name}}</router-link>님
+        <router-link :to="{ name: 'Member_DetailView', query: {userid : memberStore.userid} }">{{memberStore.userid}}</router-link>님
       </span>
-      <router-link to="`/member/logout`">로그아웃</router-link>
-      <template v-if="member.supervisor === 'Y'">
-        / <router-link to="/member/list">유저관리</router-link>
+      <router-link :to="{}" @click.prevent="memberStore.clearMember()">로그아웃</router-link>
+      <template v-if="memberStore.supervisor === 'Y'">
+        / <router-link :to="{ name: 'Member_List' }">유저관리</router-link>
       </template>
 		</template>
 	</div>
@@ -49,5 +49,8 @@
 </template>
 
 <script setup>
+import { useMemberStore } from '@/stores/member'
 import logoImage from '@/assets/image/bannerlogo.jpg';
+
+const memberStore = useMemberStore();
 </script>
