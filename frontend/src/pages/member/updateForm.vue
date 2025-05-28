@@ -1,9 +1,7 @@
 <template>
     <div class="container-fluid main-container">
 		<div class="row h-100">
-			<jsp:include page="/WEB-INF/views/common/nav.jsp"/>
-			<!-- 우측 본문 -->
-			<main class="col-md-10 main-area  d-flex justify-content-center">
+			<main class="main-area  d-flex justify-content-center">
 				<div class="login-container mt-5">
 					<h3 class="text-center mb-4">로그인</h3>
 					<form action="login" id="login" method="post">

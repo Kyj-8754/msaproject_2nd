@@ -1,9 +1,7 @@
 <template>
     <div class="container-fluid main-container">
 		<div class="row h-100">
-			<jsp:include page="/WEB-INF/views/common/nav.jsp"/>
-			<!-- 우측 본문 -->
-			<main class="col-md-10 main-area">
+			<main class="main-area">
 				<h2>회원 관리</h2>
 
 

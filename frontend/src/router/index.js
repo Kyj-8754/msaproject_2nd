@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'                                    
 import Home from '@/pages/Home.vue';
 import NotFound from '@/pages/NotFound.vue';
 import Member_LoginForm from '@/pages/member/loginForm.vue';
@@ -11,14 +11,16 @@ import Board_List from '@/pages/board/list.vue';
 import Board_RegistForm from '@/pages/board/registForm.vue';
 import Board_UpdateForm from '@/pages/board/updateForm.vue';
 
+import Board_AdminList from '@/pages/board/admin_list.vue';
+
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        { path: '/', component: Home },
+        { path: '/', name: 'Home', component: Home },
         { path: '/member/loginForm', name: 'Member_LoginForm', component: Member_LoginForm },
         { path: '/member/registForm', name: 'Member_RegistForm', component: Member_RegistForm },
-        { path: '/member/detailView/:id', name: 'Member_DetailView', component: Member_DetailView },
+        { path: '/member/detailView', name: 'Member_DetailView', component: Member_DetailView },
         { path: '/member/updateForm', name: 'Member_UpdateForm', component: Member_UpdateForm },
         { path: '/member/list', name: 'Member_List', component: Member_List },
         { path: '/board/detailView',  name: 'Board_DetailView', component: Board_DetailView },
@@ -26,6 +28,8 @@ const router = createRouter({
         { path: '/board/registForm', name: 'Board_RegistForm', component: Board_RegistForm },
         { path: '/board/updateForm', name: 'Board_UpdateForm', component: Board_UpdateForm },
         { path: '/:paths(.*)*', name: 'NotFound', component: NotFound },
+
+        { path: '/board/admin_list', name: 'Board_AdminList', component: Board_AdminList },
     ]
 })
 

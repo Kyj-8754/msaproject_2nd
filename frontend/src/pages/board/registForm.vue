@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid main-container">
 		<div class="row h-100">
-			<main class="col-md-10 main-area">
+			<main class="main-area">
 				<h2>게시물 등록</h2>
 				<div class="card-body">
 					<form id="regist" @submit.prevent="regist">
