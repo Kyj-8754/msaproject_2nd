@@ -15,7 +15,7 @@
 
 			<form @submit.prevent="searchID" :name="searchID" :id="searchID">
 				검색어 : 
-				<input type="text" :name="searchValue" :id="searchValue" v-model="pageResponse.searchValue"> 
+				<input type="text" :name="searchValue" :id="searchValue" v-model="searchValue"> 
 				<input type="submit" value="검색">
 			</form>
 
@@ -107,6 +107,20 @@
 					pageNo: 1, // 사이즈 바꾸면 1페이지로 초기화
 					size: val
 				}
+			})
+		}
+	})
+
+	const searchValue = computed({
+		get: () => route.query.searchValue || '',
+		set: (val) => {
+			router.push({
+			name: 'Board_List',
+			query: {
+				...route.query,
+				pageNo: 1,
+				searchValue: val || null
+			}
 			})
 		}
 	})
