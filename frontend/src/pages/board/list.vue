@@ -27,10 +27,10 @@
 						<th>작성자</th>
 						<th>등록일</th>
 						<th>조회수</th>
-						<!-- <template v-if="member.supervisor === 'Y'">
+						<template v-if="memberStore.supervisor === 'Y'">
 						<th>삭제여부</th>
 						<th>삭제일</th>
-						</template> -->
+						</template>
 					</tr>
 				</thead>
 				<tbody class="text-center">
