@@ -41,14 +41,12 @@
 	
 	<!-- 게시물 리스트 -->
 	<select id="list" resultType="com.msa.kyj_prj.board.Board">
-		SELECT 
-		*
+		SELECT *
 		FROM (
 		    SELECT rownum rnum, e.*
 		    FROM (SELECT *
 		        FROM T_BOARD tm 
-		        WHERE
-		         is_deleted = 'N'
+		        WHERE is_deleted = 'N'
 		        <if test="searchValue != null and searchValue != ''">
 		        	AND WRITER LIKE concat(concat('%',#{searchValue}),'%')
 		        </if> 
@@ -81,8 +79,9 @@
 	<select id="getTotalCount" resultType="int">
 		SELECT count(*)
 		FROM t_board
-		<if test="searchValue != null and searchValue != ''">
-	    	WHERE WRITER LIKE concat(concat('%',#{searchValue}),'%')
-	    </if> 
+		 WHERE is_deleted = 'N'
+	        <if test="searchValue != null and searchValue != ''">
+	        	AND WRITER LIKE concat(concat('%',#{searchValue}),'%')
+	        </if> 
 	</select>
 </mapper>

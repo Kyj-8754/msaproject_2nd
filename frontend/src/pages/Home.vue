@@ -21,8 +21,8 @@
               </tr>
             </thead>
             <tbody class="text-center">
-              <tr v-for="item in pageResponse.list" :key="item.bno">
-                  <td>{{item.bno}}</td>
+              <tr v-for="(item, index) in pageResponse.list" :key="item.bno">
+                  <td>{{ pageResponse.totalCount - index - (pageResponse.pageNo - 1) * pageResponse.size }}</td>
                   <td class="text-truncate" style="max-width: 100%;">
                     <router-link :to="{name: 'Board_DetailView', query: {bno: item.bno}}" class="d-inline-block w-100"> {{item.title}} </router-link>
                   </td>
