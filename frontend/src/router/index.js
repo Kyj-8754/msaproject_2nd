@@ -11,8 +11,6 @@ import Board_List from '@/pages/board/list.vue';
 import Board_RegistForm from '@/pages/board/registForm.vue';
 import Board_UpdateForm from '@/pages/board/updateForm.vue';
 
-import Board_AdminList from '@/pages/board/admin_list.vue';
-
 
 const router = createRouter({
     history: createWebHistory(),
@@ -28,8 +26,6 @@ const router = createRouter({
         { path: '/board/registForm', name: 'Board_RegistForm', component: Board_RegistForm },
         { path: '/board/updateForm', name: 'Board_UpdateForm', component: Board_UpdateForm },
         { path: '/:paths(.*)*', name: 'NotFound', component: NotFound },
-
-        { path: '/board/admin_list', name: 'Board_AdminList', component: Board_AdminList },
     ]
 })
 
