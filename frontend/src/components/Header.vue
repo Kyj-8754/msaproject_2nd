@@ -9,9 +9,6 @@
         <router-link :to="{ name: 'Member_DetailView', query: {userid : memberStore.userid} }">{{memberStore.userid}}</router-link>님
       </span>
       <router-link :to="{}" @click.prevent="logout">로그아웃</router-link>
-      <template v-if="memberStore.supervisor === 'Y'">
-        / <router-link :to="{ name: 'Member_List' }">유저관리</router-link>
-      </template>
 		</template>
 	</div>
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -32,9 +29,11 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link":to="{ name: 'Member_List' }">
+            <template v-if="memberStore.supervisor === 'Y'">
+              <router-link class="nav-link":to="{ name: 'Member_List' }">
                 MemberList
-            </router-link>
+              </router-link>
+            </template>
           </li>
         </ul>
       </div>
