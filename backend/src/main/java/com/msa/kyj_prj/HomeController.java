@@ -53,34 +53,12 @@ public class HomeController {
 		
 		result.put("serverTime", formattedDate );
 		
-		result.put("pageResponse",boardService.list(null,
+		result.put("pageResponse",boardService.list("N",
+				null,
 				Util.parseInt(null, 1),
 				Util.parseInt(null, 10)
 				));
 		
 		return result;
-	}
-	
-	// 로그인 페이지로
-	@RequestMapping("member/loginForm")
-	public String loginForm() {
-		
-		return "member/loginForm";
-	}
-	
-	// 회원 가입 페이지로
-	@RequestMapping("member/registForm")
-	public String registForm() {
-		
-		return "member/registForm";
-	}
-
-	//로그 아웃
-	@RequestMapping("member/logout")
-	public String logout(HttpSession session) {
-		//세션에 기록된 정보를 모두 제거한다 
-		session.invalidate();
-		
-		return "redirect:/";
 	}
 }
