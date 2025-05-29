@@ -25,7 +25,7 @@
 								<input type="text" class="form-control" name="title" id="title" :value="boardDB.title" required>
 							</div>
 							<div class="col-md-3 col-lg-3">
-								<input type="text" class="form-control" name="writer" id="writer" readonly :value=boardDB.writer>
+								<input type="text" class="form-control" name="writer" id="writer" readonly :value="boardDB.writer">
 							</div>
 							<div class="col-md-3 col-lg-3">
 								<input type="password" class="form-control" name="passwd" id="passwd" required>
@@ -33,9 +33,7 @@
 						</div>
 						<div class="mb-4">
 							<label for="content" class="form-label">내용</label>
-							<textarea class="form-control" name="content" id="content" rows="10" style="resize: none; overflow: auto; max-height: 300px;" required>
-								{{boardDB.content}}
-							</textarea>
+							<textarea class="form-control" name="content" id="content" rows="10" style="resize: none; overflow: auto; max-height: 300px;" :value="boardDB.content" required></textarea>
 						</div>
 						<div class="d-flex justify-content-end">
 							<!-- 수정 -->
@@ -76,8 +74,8 @@
 			.then(res => {
 			if (!res.data.error) {
 				alert(res.data.message)
-				router.push({ name: 'Board_DetailView',  query: { bno: boardDB.bno }
-				}) // or 직접 URL로 이동도 가능
+				router.push({ name: 'Board_DetailView',  query: { bno: bno }
+				})
 			} else {
 			alert(res.data.message)
 			}
