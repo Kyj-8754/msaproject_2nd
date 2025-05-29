@@ -98,7 +98,7 @@ public class MemberController {
 		//유저 업데이트
 		@PostMapping("update")
 		@ResponseBody
-		public Map<String, Object> update(@RequestBody Map<String, Object> param, HttpSession session){
+		public Map<String, Object> update(@RequestBody Map<String, Object> param){
 			Map<String, Object> result = new HashMap<String, Object>();
 			//전달받은 json 반환
 			String userid = (String)param.get("userid");
@@ -134,8 +134,6 @@ public class MemberController {
 			result.put("error", false);
 			result.put("message", "수정 완료되었습니다 다시 로그인 해 주세요.");
 			
-			// 회원 수정하면 세션 날리고 다시 접속하도록 유도
-			session.invalidate();
 			return result;
 			}
 	
@@ -156,10 +154,10 @@ public class MemberController {
 			// 유저 삭제
 			@PostMapping("unregister")
 			@ResponseBody
-			public Map<String, Object> delete(HttpSession session) {
+			public Map<String, Object> delete(@RequestBody Map<String, Object> param) {
 
 				Map<String, Object> result = new HashMap<String, Object>();
-				Member member =  (Member)session.getAttribute("member");
+				
 				
 			   
 				if (member == null) {
@@ -210,9 +208,9 @@ public class MemberController {
 			    }
 				
 				// 회원 DB
-				// 1. 유저 상태 조회
+				// 1. 유저 상태 조회, 탈퇴된 회원이면 존재하지않는다고 노출
 			    Member targetUser = loginService.getMember(memberban.get("userid"));
-			    if (targetUser == null) {
+			    if (targetUser == null || targetUser.getIs_deleted() == 'Y') {
 			        result.put("success", false);
 			        result.put("message", "해당 유저가 존재하지 않습니다.");
 			        return result;
