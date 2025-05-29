@@ -19,12 +19,12 @@
 				<input type="submit" value="검색">
 			</form>
 
-			<table class="table table-striped table-hover table-bordered mt-4">
+			<table class="table table-striped table-hover table-bordered mt-4 table-fixed">
 				<thead class="table-dark text-center">
 					<tr>
 						<th>글번호</th>
-						<th>제목</th>
-						<th>작성자</th>
+						<th style="width: 40%;">제목</th>
+						<th >작성자</th>
 						<th>등록일</th>
 						<th>조회수</th>
 						<template v-if="memberStore.supervisor === 'Y'">
@@ -36,11 +36,11 @@
 				<tbody class="text-center">
 						<tr v-for="(item,index) in pageResponse.list" :key="item">
 							<td>{{ pageResponse.totalCount - index - (pageResponse.pageNo - 1) * pageResponse.size }}</td>
-							<td>
-								<router-link :to="`detailView?bno=${item.bno}`">{{item.title}}</router-link>
+							<td class="cell">
+								<router-link :to="`detailView?bno=${item.bno}`" :title="item.title">{{item.title}}</router-link>
 							</td>
-							<td>{{item.writer}}</td>
-							<td>{{item.reg_date}}</td>
+							<td class="cell">{{item.writer}}</td>
+							<td>{{item.reg_date?.substring(0, 10)}}</td>
 							<td>{{item.view_count}}</td>
 							<template v-if="memberStore.supervisor === 'Y'">
 								<td>{{item.is_deleted}}</td>
@@ -161,3 +161,26 @@
 		return pageResponse.searchValue ? `${base}&searchValue=${encodeURIComponent(pageResponse.searchValue)}` : base
 	}
 </script>
+
+
+<style scoped>
+.table-fixed {
+  table-layout: fixed;
+  word-break: break-word;
+}
+
+.cell {
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cell a {
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+</style>
