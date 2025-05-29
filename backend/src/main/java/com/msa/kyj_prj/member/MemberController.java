@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,14 +50,13 @@ public class MemberController {
 		// 로그인 처리
 		@PostMapping("login")
 		@ResponseBody
-		public Map<String, Object> login(@RequestBody Member member, HttpSession session) {
+		public Map<String, Object> login(@RequestBody Member member) {
 			LoginResult member_result = loginService.login(member.getUserid(), member.getPasswd());
 			Map<String, Object> result = new HashMap<String, Object>();
 			int MAX_FAILS = 5;
 			
 			switch (member_result.getStatus()) {
 		      case SUCCESS:
-		        session.setAttribute("member", member_result.getMember());
 		        result.put("status", "SUCCESS");
 		        result.put("supervisor", member_result.getMember().getSupervisor());
 		        result.put("message", member_result.getMember().getName() +  "님 환영합니다.");
@@ -154,23 +154,22 @@ public class MemberController {
 			// 유저 삭제
 			@PostMapping("unregister")
 			@ResponseBody
-			public Map<String, Object> delete(@RequestBody Map<String, Object> param) {
-
+			public Map<String, Object> delete(@RequestBody Map<String, Object> params) {
 				Map<String, Object> result = new HashMap<String, Object>();
+				String userid = (String) params.get("userid");
+				String sotreUserid = (String) params.get("sotreUserid");
 				
-				
-			   
-				if (member == null) {
+			    if (!userid.equals(sotreUserid)) {
 			        result.put("error", true);
 			        result.put("message", "로그인이 필요합니다.");
 			        return result;
 			    }
 
-			    boolean success = loginService.delete(member.getUserid());
+			    boolean success = loginService.delete(userid);
 
 			    if (success) {
-			        session.invalidate(); // 세션 제거
 			        result.put("error", false);
+			        result.put("message", "메인 화면으로 이동합니다.");
 			    } else {
 			        result.put("error", true);
 			        result.put("message", "회원 탈퇴 처리 실패");
@@ -183,7 +182,6 @@ public class MemberController {
 			@GetMapping("list")
 			@ResponseBody
 			public Map<String, Object> list(String pageNo, String size, String searchValue) {
-				System.out.println("들어옴");
 				Map<String, Object>result = new HashMap<>();
 				
 				result.put("pageResponse",loginService.list(searchValue,
