@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -62,26 +64,23 @@ public class BoardController {
 	}
 
 	// 게시판 목록 진입
-	@RequestMapping("list")
-	public Map<String, Object> list(String pageNo, String size, String searchValue, HttpSession session) {
+	@GetMapping("list")
+	public Map<String, Object> list(String pageNo, String size, String searchValue,  @RequestHeader(value = "supervisor", defaultValue = "N") String supervisor) {
 		
 		Map<String, Object> result = new HashMap<>();
-		
-		// 로그인 받아오기
-		Member SessionMember = (Member)session.getAttribute("member");
-		
-		// 로그인 되어있고, 관리자 일 경우
-		if(SessionMember != null) {
-			if(SessionMember.getSupervisor().equals("Y")) {
-				result.put("pageResponse",boardService.list_admin(searchValue,
-						Util.parseInt(pageNo, 1),
-						Util.parseInt(size, 10)
-						));
-				return result;
-			}
+		//로그인 되어있고, 관리자 일 경우
+		if(supervisor.equals("Y")) {
+			result.put("pageResponse",boardService.list_admin(supervisor,
+					searchValue,
+					Util.parseInt(pageNo, 1),
+					Util.parseInt(size, 10)
+					));
+			return result;
 		}
+		
 	
-	result.put("pageResponse",boardService.list(searchValue,
+	result.put("pageResponse",boardService.list(supervisor,
+			searchValue,
 			Util.parseInt(pageNo, 1),
 			Util.parseInt(size, 10)
 			));

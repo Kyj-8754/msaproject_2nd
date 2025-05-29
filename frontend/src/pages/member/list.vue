@@ -14,7 +14,7 @@
 				({{pageResponse.pageNo}}/{{pageResponse.totalPage}})
 				<form @submit.prevent="searchID" :name="searchID" :id="searchID">
 					검색어 : 
-					<input type="text" :name="searchValue" :id="searchValue" v-model="searchValue"> 
+					<input type="text" :name="searchValue" :id="searchValue" v-model="pageResponse.searchValue"> 
 					<input type="submit" value="검색">
 				</form>
 
@@ -98,6 +98,7 @@
 		startPage: 1,
 		totalPage: 1,
 		fail_login: 1,
+		searchValue: "",
 		totalCount: 1,
 	})
 
@@ -113,20 +114,6 @@
 					pageNo: 1, // 사이즈 바꾸면 1페이지로 초기화
 					size: val
 				}
-			})
-		}
-	})
-
-	const searchValue = computed({
-		get: () => route.query.searchValue || '',
-		set: (val) => {
-			router.push({
-			name: 'Member_List',
-			query: {
-				...route.query,
-				pageNo: 1,
-				searchValue: val || null
-			}
 			})
 		}
 	})
@@ -165,8 +152,8 @@
 
 	// url 변경시 반응
 	function makeUrl(pageNo) {
-	const base = `list?pageNo=${pageNo}&size=${pageResponse.size}`
-	return pageResponse.searchValue ? `${base}&searchValue=${encodeURIComponent(searchValue)}` : base
+		const base = `list?pageNo=${pageNo}&size=${pageResponse.size}`
+		return pageResponse.searchValue ? `${base}&searchValue=${encodeURIComponent(searchValue)}` : base
 	}
 
 	//밴 시스템 만들기

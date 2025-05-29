@@ -66,7 +66,7 @@
 		    FROM (SELECT *
 		        FROM T_BOARD tm 
 		        <if test="searchValue != null and searchValue != ''">
-		        WHERE WRITER LIKE concat(concat('%',#{searchValue}),'%')
+		        	WHERE WRITER LIKE concat(concat('%',#{searchValue}),'%')
 		        </if> 
 		        ORDER BY BNO desc
 		    ) e
@@ -79,9 +79,17 @@
 	<select id="getTotalCount" resultType="int">
 		SELECT count(*)
 		FROM t_board
-		 WHERE is_deleted = 'N'
+      	WHERE is_deleted = 'N'
+		<if test="searchValue != null and searchValue != ''">
+		    AND WRITER LIKE concat('%', #{searchValue}, '%')
+		</if>
+	</select>
+	
+	<select id="getTotalCount_admin" resultType="int">
+		SELECT count(*)
+		FROM t_board
 	        <if test="searchValue != null and searchValue != ''">
-	        	AND WRITER LIKE concat(concat('%',#{searchValue}),'%')
-	        </if> 
+	            WHERE WRITER LIKE concat(concat('%',#{searchValue}),'%')
+	        </if>
 	</select>
 </mapper>

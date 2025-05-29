@@ -48,7 +48,7 @@ public class BoardService{
 	}
 
 		
-	public PageResponseVO_board list(String searchValue, int pageNumber, int size) {
+	public PageResponseVO_board list(String supervisor, String searchValue, int pageNumber, int size) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("start", (pageNumber-1)*size+1);
@@ -62,24 +62,19 @@ public class BoardService{
 				searchValue);
 	}
 
-	public PageResponseVO_board list_admin(String searchValue, int pageNumber, int size) {
+	public PageResponseVO_board list_admin(String supervisor, String searchValue, int pageNumber, int size) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("supervisor", supervisor);
 		map.put("start", (pageNumber-1)*size+1);
 		map.put("end", pageNumber * size);
 		map.put("searchValue", searchValue);
 		return new PageResponseVO_board(
 				boardDAO.list_admin(map),
-				boardDAO.getTotalCount(map),
+				boardDAO.getTotalCount_admin(map),
 				pageNumber,
 				size,
 				searchValue);
 	}
-	
-
-//	public int getTotalCount() {
-//		return loginDAO.getTotalCount();
-//	}
-
 	
 }

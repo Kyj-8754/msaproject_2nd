@@ -44,7 +44,7 @@
 							<td>{{item.view_count}}</td>
 							<template v-if="memberStore.supervisor === 'Y'">
 								<td>{{item.is_deleted}}</td>
-								<td>{{item.deleted_at}}</td>
+								<td>{{item.deleted_at?.substring(0, 10)}}</td>
 							</template>
 						</tr>
 				</tbody>
@@ -85,7 +85,8 @@
 	import { useRouter, useRoute } from 'vue-router'
 	import { useMemberStore } from '@/stores/member'
 
-	const memberStore = useMemberStore();
+	const memberStore = useMemberStore(); // 로그인한 유저 정보 체크
+	const supervisor = memberStore.supervisor === 'Y' ? 'Y' : 'N'; // 관리자인지 체크
 	const router = useRouter() // 보낼 경로
 	const route = useRoute() // 현재 경로
 	const sizes = [10, 30, 90, 100] // 건수 사이즈 
@@ -143,15 +144,20 @@
 	}
 	// 값 변경시 다시 list 가져오도록 요청
 	function fetchData(pageNo, size, searchValue) {
-	axios.get(`/api/board/list?pageNo=${pageNo}&size=${size}&searchValue=${encodeURIComponent(searchValue || '')}`)
-		.then(res => {
-		Object.assign(pageResponse, res.data.pageResponse)
-		})
+		axios.get(`/api/board/list`,{
+			params:{pageNo,size,searchValue: searchValue || ''},
+			headers: {
+				'supervisor': supervisor
+			}
+			})
+			.then(res => {
+			Object.assign(pageResponse, res.data.pageResponse)
+			});
 	}
 
 	// url 변경시 반응
 	function makeUrl(pageNo) {
 		const base = `list?pageNo=${pageNo}&size=${pageResponse.size}`
-		return pageResponse.searchValue ? `${base}&searchValue=${encodeURIComponent(searchValue)}` : base
+		return pageResponse.searchValue ? `${base}&searchValue=${encodeURIComponent(pageResponse.searchValue)}` : base
 	}
 </script>
