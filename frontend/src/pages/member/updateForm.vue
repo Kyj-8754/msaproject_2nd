@@ -5,7 +5,7 @@
 				<div class="container d-flex justify-content-center align-items-center min-vh-100">
 				<div class="card shadow p-4 rounded w-100" style="max-width: 600px;">
 					<h1 class="text-center mb-4">회원 정보 수정</h1>
-					<form class="row g-3 needs-validation"  @submit.prevent="regist" name="update" id="update" novalidate>
+					<form class="row g-3 needs-validation"  @submit.prevent="update" name="update" id="update" novalidate>
 						<div class="mb-3">
 							<label for="validationuserid" class="form-label">아이디</label>
 							<div class="input-group has-validation">
@@ -100,7 +100,7 @@
 
 
 
-const regist = () => {
+const update = () => {
   const confirmRegist = confirm("회원 수정 하시겠습니까?")
   if (!confirmRegist) return
 
@@ -110,7 +110,7 @@ const regist = () => {
 		  alert(res.data.message)
 		  // 성공하면 로그아웃하고 로그인화면으로 
 		  logoutProcess(() =>{
-			router.push('Member_LoginForm')
+			router.push({name: 'Member_LoginForm'})
 		})
       } else {
         alert(res.data.message)
