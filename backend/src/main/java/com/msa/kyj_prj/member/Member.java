@@ -11,7 +11,6 @@ public class Member {
 	private String userid;		//아이디
 	private String passwd;		//패스워드
 	private String name;		//이름
-	private int age;			//현재사용안하는 나이
 	private String loginTime;	//로그인 기록
 	private char is_deleted;	//회원 탈퇴시 Y, N저장
 	private String deleted_at;	//회원 탈퇴 기록
