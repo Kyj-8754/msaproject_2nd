@@ -5,10 +5,11 @@
         <router-link :to="{ name: 'Member_RegistForm' }"> 회원 가입</router-link> 
     </template>
 		<template v-else>
-			<span class="me-3">
+      <span class="me-3">
         <router-link :to="{ name: 'Member_DetailView', query: {userid : memberStore.userid} }">{{memberStore.userid}}</router-link>님
       </span>
       <router-link :to="{}" @click.prevent="logout">로그아웃</router-link>
+      남은 시간: {{ remainingMinutes }}분 {{ remainingSeconds }}초
 		</template>
 	</div>
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -48,6 +49,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useMemberStore } from '@/stores/member'
 import { logoutProcess } from '@/util/AuthUtil'
 import logoImage from '@/assets/image/bannerlogo.jpg';
@@ -61,4 +63,62 @@ const logout = () => {
   });
 }
 
+
+
+// 남은 시간 (초 단위로 관리)
+const TIMEOUT_SECONDS = 600
+const remainingTime = ref(TIMEOUT_SECONDS)
+
+// 타이머 ID 저장용
+let countdownTimer = null
+let activityEvents = ['mousemove', 'keydown', 'mousedown', 'touchstart'] // 키입력, 마우스 버튼클릭, 스크린터치감지
+
+// 타이머 초기화 함수
+const resetTimer = () => {
+  remainingTime.value = TIMEOUT_SECONDS
+}
+
+// 타이머 시작 함수
+const startTimer = () => {
+  countdownTimer = setInterval(() => {
+    if (remainingTime.value > 0) {
+      remainingTime.value--
+    } else {
+      clearInterval(countdownTimer)
+      removeActivityListeners()
+      alert("10분동안 움직임이 없어서 자동 로그아웃합니다.")
+      logout()
+    }
+  }, 1000)
+}
+
+// 이벤트 리스너 등록 및 제거
+const activityListener = () => resetTimer()
+
+const addActivityListeners = () => {
+  activityEvents.forEach(event =>
+    window.addEventListener(event, activityListener)
+  )
+}
+
+const removeActivityListeners = () => {
+  activityEvents.forEach(event =>
+    window.removeEventListener(event, activityListener)
+  )
+}
+
+// 컴포넌트 수명주기
+onMounted(() => {
+  addActivityListeners()
+  startTimer()
+})
+
+onBeforeUnmount(() => {
+  clearInterval(countdownTimer)
+  removeActivityListeners()
+})
+
+// 화면 출력용 계산값
+const remainingMinutes = computed(() => Math.floor(remainingTime.value / 60))
+const remainingSeconds = computed(() => remainingTime.value % 60)
 </script>
