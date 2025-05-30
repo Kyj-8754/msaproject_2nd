@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 // DB연동 SQL
 @Mapper
@@ -19,4 +20,6 @@ public interface LoginDAO {
 	public int unban(String userid);
 	public boolean ban(String userid);
 	public boolean delete(String userid);
+	public Member findMember(@Param("username") String username,@Param("phone_no") String phone_no, @Param("userid") String userid);
+	public boolean rePasswd(@Param("userid") String userid,@Param("passwd") String hash);
 }

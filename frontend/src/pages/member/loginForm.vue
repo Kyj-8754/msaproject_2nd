@@ -18,18 +18,18 @@
 						<router-link :to="{ name: 'Member_RegistForm' }" class="btn btn-secondary">회원가입</router-link>
 						</div>
 						<div class="d-flex justify-content-center gap-2">
-						<a href="findID">아이디 찾기</a>
-						<a href="findPW">비밀번호 찾기</a>
+							<button type="button" class="btn btn-link p-0 text-muted" @click="isModalOpen = true">아이디/비밀번호 찾기</button>
 						</div>
 					</form>
 				</div>
+				<FindMember v-if="isModalOpen" @close="isModalOpen = false" />
 			</main>
 		</div>
 	</div>
 </template>
 
 <script setup>
-	import { reactive } from 'vue'
+	import { reactive, ref } from 'vue'
 	import { useRoute, useRouter } from 'vue-router'
 	import { Login } from '@/util/AuthUtil'
 
@@ -52,6 +52,10 @@
 	const login = () => {
 		Login(info.userid, info.passwd, successCallback, faileCallback);
 	}
+
+	// 아이디, 비밀번호 찾는 로직 꺼내오기기
+	import FindMember from '@/pages/member/findMember.vue'
+	const isModalOpen = ref(false)
 </script>
 
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -229,6 +230,51 @@ public class MemberController {
 			    }
 				
 				return result;
+				}
+			
+			
+			
+			// 유저 아이디 찾기
+			@PostMapping("findMemberId")
+			public Map<String, Object> findMemberId(@RequestBody Map<String, String> param) {
+				Map<String, Object> result = new HashMap<>();
+				
+				String username = param.get("username");
+				String phone_no = param.get("phone_no");
+				String userid = param.get("userid");
+			   
+				Member memberDB = loginService.findMember(username, phone_no, userid);
+				
+				if (memberDB == null) {
+					result.put("existUserId", false);
+				return result;
+				}
+			
+				result.put("existUserId", true);
+				result.put("userid", memberDB.getUserid());
+				return result; 
+			}
+			
+			
+			// 유저 아이디 찾기
+			@PostMapping("reMemberPw")
+			public Map<String, Object> reMemberPw(@RequestBody Map<String, String> param) {
+				Map<String, Object> status = new HashMap<>();
+				
+				String userid = param.get("userid");
+				String repasswd = param.get("repasswd");
+			   
+				String hash = passwordEncoder.encode(repasswd);
+				
+				boolean result = loginService.rePasswd(userid, hash);
+				
+				if (result) {
+					status.put("existUserId", true);
+					return status;
+				}
+			
+					status.put("existUserId", false);
+				return status; 
 				}
 		
 }

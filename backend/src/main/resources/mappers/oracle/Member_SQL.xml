@@ -82,4 +82,20 @@
 	    	WHERE name LIKE concat(concat('%',#{searchValue}),'%')
 	    </if>
 	</select>
+	
+	
+	
+	<!-- 잊어 먹은 멤버 찾아오기 -->
+	<select id="findMember" resultType="com.msa.kyj_prj.member.Member">
+		select * from tb_member where name = #{username} and phone_no = #{phone_no}
+		 <if test="userid != null and userid != ''">
+		        	and userid = #{userid}
+        </if> 
+	</select>
+	
+	
+	<!-- 멤버 비밀번호 재설정 -->
+	<update id="rePasswd">
+		update tb_member set passwd = #{passwd} where userid = #{userid}
+	</update>
 </mapper>

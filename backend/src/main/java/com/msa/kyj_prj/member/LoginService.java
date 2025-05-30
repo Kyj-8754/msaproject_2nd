@@ -114,4 +114,15 @@ public class LoginService{
 		loginDAO.fail_login(userid);
 	}
 	
+	
+	//유저 정보 찾기
+	public Member findMember(String username, String phone_no, String userid) {
+		return loginDAO.findMember(username, phone_no, userid);
+	}
+
+
+	public boolean rePasswd(String userid, String hash) {
+		return loginDAO.rePasswd(userid, hash);
+	}
+	
 }
