@@ -8,15 +8,16 @@ import lombok.NoArgsConstructor;
 @Data @AllArgsConstructor @Builder
 @NoArgsConstructor
 public class Board {
-	private int bno;
-	private String title;
-	private String content;
-	private String writer;
-	private String passwd;
-	private String reg_date;
-	private int view_count;
-	private String is_deleted;
-	private String deleted_at;
+	private int bno;				// 게시물 번호
+	private String title;			// 제목
+	private String content;			// 내용
+	private String writer;			// 글 작성자
+	private String passwd;			// 비밀번호
+	private String reg_date;		// 등록일
+	private int view_count;			// 조회수
+	private String is_deleted;		// 삭제일
+	private String deleted_at;		// 삭제 여부
+	private String modified_date;	// 글 수정일
 	
 	
 //	public boolean isValid() {

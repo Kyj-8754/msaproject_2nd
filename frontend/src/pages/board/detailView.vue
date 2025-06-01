@@ -12,7 +12,7 @@
 							</tr>
 							<tr class="text-muted small">
 								<td style="width: 25%;">작성자: <strong>{{boardDB.writer}}</strong></td>
-								<td style="width: 25%;">작성일: {{boardDB.reg_date}}</td>
+								<td style="width: 25%;">작성일: {{ boardDB.modified_date ? boardDB.modified_date.substring(0, 16) + ' (수정됨)' : boardDB.reg_date?.substring(0, 16) }}</td>
 								<td style="width: 25%;">조회수: {{boardDB.view_count}}</td>
 								<td style="text-align: right;">
 								<button @click="goToUpdateForm" class="btn btn-outline-primary btn-sm">수정하기</button>
@@ -36,11 +36,11 @@
 								<div class="d-flex justify-content-between align-items-center mb-2 border-bottom">
 									<div class="fw-bold">{{ comment.userid }}</div>
 									<div class="text-muted" style="font-size: 0.9rem;">
-										{{ comment.regist_date?.substring(0, 16) }}
+										{{ comment.modified_date ? comment.modified_date.substring(0, 16) + ' (수정됨)' : comment.regist_date?.substring(0, 16) }}
 									</div>
 								</div>
 								<div class="mb-2">{{ comment.content }}</div>
-								<div class="text-end" v-if="memberStore.userid === comment.userid">
+								<div class="text-end" v-if="memberStore.userid === comment.userid || memberStore.supervisor === 'Y'">
 									<button class="btn btn-sm btn-outline-secondary me-1" @click="editComment(comment)">수정</button>
 									<button class="btn btn-sm btn-outline-danger" @click="deleteComment(comment.comment_no)">삭제</button>
 								</div>
@@ -91,7 +91,6 @@
   import axios from 'axios'
 
   const memberStore = useMemberStore(); // 로그인한 유저 정보 체크
-  const supervisor = memberStore.supervisor === 'Y' ? 'Y' : 'N'; // 관리자인지 체크
   const router = useRouter() // 보낼 경로
   const route = useRoute()	// 현재 경로
   const bno = route.query.bno // 현재 경로의 bno

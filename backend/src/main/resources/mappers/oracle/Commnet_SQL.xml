@@ -14,7 +14,8 @@
 <!-- 댓글 업데이트 명령문 -->
 <update id="update">
 	update t_comment set
-	content = #{content}
+	content = #{content},
+	modified_date = SYSDATE
 	Where comment_no = #{comment_no}
 </update>
 
