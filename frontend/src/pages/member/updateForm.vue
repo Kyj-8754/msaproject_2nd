@@ -104,6 +104,18 @@ const update = () => {
   const confirmRegist = confirm("회원 수정 하시겠습니까?")
   if (!confirmRegist) return
 
+  if (!passwdMatch.value) {
+		document.getElementById("newPasswd")?.focus();
+		alert("새 비밀번호를 다시 확인해주세요.");
+		return;
+	}
+
+	if (!PasswdValid.value) {
+		document.getElementById("newPasswd2")?.focus();
+		alert("새 비밀번호확인을 다시 확인해주세요.");
+		return;
+	}
+
   axios.post('/api/member/update', form)
     .then(res => {
       if (!res.data.error) {

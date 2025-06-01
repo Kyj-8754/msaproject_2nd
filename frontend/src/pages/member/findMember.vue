@@ -2,33 +2,6 @@
   <div class="modal-backdrop">
     <div class="modal-content">
         <template v-if="mode === 'findId'">
-		<!-- <label for="validationName" class="form-label">이름</label>
-		<div class="input-group has-validation">
-			<input type="text" class="form-control" name="username" id="username" aria-describedby="inputGroupPrepend" required>
-		</div>
-		<label for="validationPhoneNo" class="form-label">전화번호</label>
-		<div class="input-group has-validation">
-			<input type="text" class="form-control" name="phone_no" id="phone_no" aria-describedby="inputGroupPrepend" required>
-		</div>
-        <button @click="goToShowId">아이디 찾기</button>
-
-
-		<label for="validationuserid" class="form-label">아이디</label>
-		<div class="input-group has-validation">
-			<input type="text" class="form-control" name="userid" id="userid" aria-describedby="inputGroupPrepend" required>
-		</div>
-		<label for="validationName" class="form-label">이름</label>
-		<div class="input-group has-validation">
-			<input type="text" class="form-control" name="username" id="username" aria-describedby="inputGroupPrepend" required>
-		</div>
-		<label for="validationPhoneNo" class="form-label">전화번호</label>
-		<div class="input-group has-validation">
-			<input type="text" class="form-control" name="phone_no" id="phone_no" aria-describedby="inputGroupPrepend" required>
-		</div>
-		<button @click="goToFindPw">비밀번호 찾기</button> -->
-
-
-		 <!-- 하나의 화면에 아이디/비번 찾기 -->
 		[아이디 찾기] 
       <label class="form-label">이름</label>
       <input type="text" class="form-control" v-model="findIdForm.name" />
