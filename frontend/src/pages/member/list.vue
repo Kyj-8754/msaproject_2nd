@@ -3,8 +3,9 @@
 		<div class="row h-100">
 			<main class="main-area">
 				<h2>회원 관리</h2>
+				<div class="d-flex align-items-center gap-3 mb-3">
 				건수 :
-				<select name="size" id="size" v-model="size">
+				<select name="size" id="size" v-model="size" class="form-select d-inline-block w-auto">
 					<option v-for="size in sizes" :key="size" :value="size">
 						{{ size }}
 					</option>
@@ -12,11 +13,12 @@
 
 				<!-- 현재 페이지 번호 / 전체 페이지 번호 -->
 				({{pageResponse.pageNo}}/{{pageResponse.totalPage}})
-				<form @submit.prevent="searchID" :name="searchID" :id="searchID">
-					검색어 : 
-					<input type="text" :name="searchValue" :id="searchValue" v-model="pageResponse.searchValue"> 
-					<input type="submit" value="검색">
+				<form @submit.prevent="searchID" :name="searchID" :id="searchID" class="d-flex align-items-center gap-2">
+					<label for="searchValue" class="me-1 mb-0">검색어:</label> 
+					<input type="text" :name="searchValue" :id="searchValue" v-model="pageResponse.searchValue" class="form-control form-control-sm w-auto"> 
+					<input type="submit" value="검색"  class="btn btn-outline-secondary btn-sm">
 				</form>
+				</div>
 
 				<table class="table table-bordered table-hover text-center align-middle">
 					<thead class="table table-striped table-hover table-bordered align-middle text-center">
