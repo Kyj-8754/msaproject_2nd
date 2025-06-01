@@ -10,12 +10,14 @@
 							<div class="col-md-6 col-lg-6">
 								<label for="title" class="form-label">제목</label>
 							</div>
-							<div class="col-md-3 col-lg-3">
-								<label for="writer" class="form-label">작성자 ID</label>
-							</div>
-							<div class="col-md-3 col-lg-3">
-								<label for="passwd" class="form-label">비밀번호</label>
-							</div>
+							<template v-if="!memberStore.authenticated">
+								<div class="col-md-3 col-lg-3">
+									<label for="writer" class="form-label">작성자 ID</label>
+								</div>
+								<div class="col-md-3 col-lg-3">
+									<label for="passwd" class="form-label">비밀번호</label>
+								</div>
+							</template>
 						</div>
 
 						<!-- 입력 필드 줄 -->
@@ -24,12 +26,14 @@
 								<input type="hidden" name="bno" id="bno" :value="boardDB.bno">
 								<input type="text" class="form-control" name="title" id="title" :value="boardDB.title" required>
 							</div>
-							<div class="col-md-3 col-lg-3">
-								<input type="text" class="form-control" name="writer" id="writer" readonly :value="boardDB.writer">
-							</div>
-							<div class="col-md-3 col-lg-3">
-								<input type="password" class="form-control" name="passwd" id="passwd" required>
-							</div>
+							<template v-if="!memberStore.authenticated">
+								<div class="col-md-3 col-lg-3">
+									<input type="text" class="form-control" name="writer" id="writer" readonly :value="boardDB.writer">
+								</div>
+								<div class="col-md-3 col-lg-3">
+									<input type="password" class="form-control" name="passwd" id="passwd" required>
+								</div>
+							</template>
 						</div>
 						<div class="mb-4">
 							<label for="content" class="form-label">내용</label>
@@ -52,7 +56,9 @@
 	import axios from 'axios'
 	import {ref, onMounted} from 'vue'
 	import { useRoute, useRouter } from 'vue-router'
+	import { useMemberStore } from '@/stores/member'
 
+	const memberStore = useMemberStore();
 	const router = useRouter()
 	const route = useRoute()
 	const bno = route.query.bno

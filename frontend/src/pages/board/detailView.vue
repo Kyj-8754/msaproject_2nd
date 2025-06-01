@@ -216,4 +216,11 @@
 				}
 			})
 	}
+
+	onMounted(() => {
+		if (memberStore.authenticated) {
+			form.writer = memberStore.userid
+			form.passwd = '';
+		}
+	})
 </script>

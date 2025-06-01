@@ -9,17 +9,18 @@
 							<label for="title" class="form-label">제목</label> 
 							<input type="text" class="form-control"  v-model="form.title" name="title" id="title" placeholder="제목을 입력하세요" required>
 						</div>
-
-						<div class="row mb-3">
-							<div class="col-md-6">
-								<label for="writer" class="form-label">작성자 ID</label>
-								<input type="text" class="form-control"  v-model="form.writer" name="writer" id="writer" required>
+						<template v-if="!memberStore.authenticated">
+							<div class="row mb-3">
+								<div class="col-md-6">
+									<label for="writer" class="form-label">작성자 ID</label>
+									<input type="text" class="form-control"  v-model="form.writer" name="writer" id="writer" required>
+								</div>
+								<div class="col-md-6">
+									<label for="passwd" class="form-label">비밀번호</label> 
+									<input type="password" class="form-control"  v-model="form.passwd" name="passwd" id="passwd" required>
+								</div>
 							</div>
-							<div class="col-md-6">
-								<label for="passwd" class="form-label">비밀번호</label> 
-								<input type="password" class="form-control"  v-model="form.passwd" name="passwd" id="passwd" required>
-							</div>
-						</div>
+						</template>
 
 						<div class="mb-4">
 							<label for="content" class="form-label">내용</label>
@@ -37,11 +38,13 @@
 </template>
 
 <script setup>
-  import {reactive} from 'vue'
+  import {reactive, onMounted} from 'vue'
   import axios from 'axios'
   import { useRouter } from 'vue-router'
+  import { useMemberStore } from '@/stores/member'
 
   const router = useRouter()
+  const memberStore = useMemberStore();
   const form = reactive({
 	title : '',
 	writer : '',
@@ -68,4 +71,11 @@
       alert('등록 중 오류가 발생했습니다.')
     })
 }
+
+onMounted(() => {
+  if (memberStore.authenticated) {
+    form.writer = memberStore.userid
+	form.passwd = '';
+  }
+})
 </script>

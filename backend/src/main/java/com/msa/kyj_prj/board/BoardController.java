@@ -2,7 +2,7 @@ package com.msa.kyj_prj.board;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +48,14 @@ public class BoardController {
 	@ResponseBody
 	public Map<String, Object> delete(@ModelAttribute Board board) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		
 		Board boardDB = boardService.getBoard(board.getBno());
-
-		if (!boardDB.getPasswd().equals(board.getPasswd())) {
+		
+		// 만약 회원일 경우 DB에 비밀번호가 누락되어 있기에 구분짓기위해 비교
+		String dbPasswd = boardDB.getPasswd();
+	    String inputPasswd = board.getPasswd();
+		
+		if (!Objects.equals(dbPasswd, inputPasswd)) {
 			result.put("error", true);
 			result.put("message", "게시물 비밀번호가 다름니다.");
 			return result;
@@ -121,7 +126,11 @@ public class BoardController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Board boardDB = boardService.getBoard(board.getBno());
 
-		if (!boardDB.getPasswd().equals(board.getPasswd())) {
+		// 만약 회원일 경우 DB에 비밀번호가 누락되어 있기에 구분짓기위해 비교
+		String dbPasswd = boardDB.getPasswd();
+	    String inputPasswd = board.getPasswd();
+		
+		if (!Objects.equals(dbPasswd, inputPasswd)) {
 			result.put("error", true);
 			result.put("message", "게시물 비밀번호가 다름니다.");
 			return result;
