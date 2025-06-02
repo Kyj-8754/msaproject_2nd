@@ -33,11 +33,17 @@ const Login = async (userid, passwd, sucessCallback, failCallback) => {
         break
 
       case 'NO_USER':
+          alert(message)
+          if (failCallback) failCallback()
+          break
       case 'FAIL_CREDENTIALS':
+          alert(message)
+          if (failCallback) failCallback()
+          break
       case 'FAIL_LOCKED':
-        alert(message)
-        if (failCallback) failCallback()
-        break
+          alert(message)
+          if (failCallback) failCallback()
+          break
 
       default:
         alert('알 수 없는 오류가 발생했습니다.')
