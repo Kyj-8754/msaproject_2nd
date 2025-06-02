@@ -33,7 +33,6 @@ public class BoardController {
 
 	// 게시판 등록하기
 	@PostMapping("regist")
-	@ResponseBody
 	public ResponseEntity<Object> regist(@RequestBody Board board) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		boardService.registForm(board);
@@ -45,7 +44,6 @@ public class BoardController {
 
 	// 게시물 삭제
 	@PostMapping("delete")
-	@ResponseBody
 	public Map<String, Object> delete(@ModelAttribute Board board) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
@@ -121,7 +119,6 @@ public class BoardController {
 
 	// 게시판 수정
 	@PostMapping("update")
-	@ResponseBody
 	public Map<String, Object> update(@ModelAttribute Board board) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Board boardDB = boardService.getBoard(board.getBno());

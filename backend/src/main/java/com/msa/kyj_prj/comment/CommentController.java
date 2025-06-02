@@ -35,7 +35,6 @@ public class CommentController {
 	
 		// 글 작성
 		@PostMapping("regist")
-		@ResponseBody
 		public ResponseEntity<Object> regist(@RequestBody Comment comment) {
 			Map<String, Object> result = new HashMap<String, Object>();
 			commnetService.registForm(comment);
@@ -47,7 +46,6 @@ public class CommentController {
 		
 		//댓글 수정
 		@PostMapping("update")
-		@ResponseBody
 		public ResponseEntity<Object>  update(@RequestBody Comment comment){
 			Map<String, Object> result = new HashMap<String, Object>();
 			
@@ -60,7 +58,6 @@ public class CommentController {
 		
 		// 댓글 삭제
 		@PostMapping("delete")
-		@ResponseBody
 		public ResponseEntity<Object> delete(@RequestBody Comment comment) {
 			Map<String, Object> result = new HashMap<String, Object>();
 			
@@ -80,7 +77,6 @@ public class CommentController {
 			
 		// 댓글 리스트
 		@GetMapping("list")
-		@ResponseBody
 		public Map<String, Object> list(String bno) {
 			Map<String, Object>result = new HashMap<>();
 			

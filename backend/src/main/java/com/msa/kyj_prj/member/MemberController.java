@@ -37,7 +37,6 @@ public class MemberController {
 		// 비동기 처리
 		// json으로 받은 값 rest api로 처리
 		@PostMapping("regist")
-		@ResponseBody
 		public boolean postRegist(@RequestBody Member member) {
 			String raw = member.getPasswd();
 		    String hash = passwordEncoder.encode(raw);
@@ -50,7 +49,6 @@ public class MemberController {
 
 		// 로그인 처리
 		@PostMapping("login")
-		@ResponseBody
 		public Map<String, Object> login(@RequestBody Member member) {
 			LoginResult member_result = loginService.login(member.getUserid(), member.getPasswd());
 			Map<String, Object> result = new HashMap<String, Object>();
@@ -98,7 +96,6 @@ public class MemberController {
 		
 		//유저 업데이트
 		@PostMapping("update")
-		@ResponseBody
 		public Map<String, Object> update(@RequestBody Map<String, Object> param){
 			Map<String, Object> result = new HashMap<String, Object>();
 			//전달받은 json 반환
@@ -140,141 +137,137 @@ public class MemberController {
 	
 		
 
-			// userid 중복확인
-			@PostMapping("isExistUserId")
-		    @ResponseBody
-		    public Map<String, Object> isExistUserId(@RequestBody Member member) {
-				Map<String, Object> map = new HashMap<String, Object>();
-				Member memberInfo = loginService.getMember(member.getUserid());
-				
-				map.put("existUserId", memberInfo != null);
-				return map;
+		// userid 중복확인
+		@PostMapping("isExistUserId")
+	    public Map<String, Object> isExistUserId(@RequestBody Member member) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			Member memberInfo = loginService.getMember(member.getUserid());
+			
+			map.put("existUserId", memberInfo != null);
+			return map;
+	    }
+		
+		
+		// 유저 삭제
+		@PostMapping("unregister")
+		public Map<String, Object> delete(@RequestBody Map<String, Object> params) {
+			Map<String, Object> result = new HashMap<String, Object>();
+			String userid = (String) params.get("userid");
+			String sotreUserid = (String) params.get("sotreUserid");
+			
+		    if (!userid.equals(sotreUserid)) {
+		        result.put("error", true);
+		        result.put("message", "로그인이 필요합니다.");
+		        return result;
+		    }
+
+		    boolean success = loginService.delete(userid);
+
+		    if (success) {
+		        result.put("error", false);
+		        result.put("message", "메인 화면으로 이동합니다.");
+		    } else {
+		        result.put("error", true);
+		        result.put("message", "회원 탈퇴 처리 실패");
+		    }
+			return result;
+		}
+		
+		
+		// 유저 리스트
+		@GetMapping("list")
+		public Map<String, Object> list(String pageNo, String size, String searchValue) {
+			Map<String, Object>result = new HashMap<>();
+			
+			result.put("pageResponse",loginService.list(searchValue,
+					Util.parseInt(pageNo, 1),
+					Util.parseInt(size, 10)
+					));
+			return result;
+		}
+		
+		//유저 밴처리
+		@PostMapping("ban")
+		public Map<String, Object> ban(@RequestBody Map<String, String> memberban){
+			Map<String, Object> result = new HashMap<String, Object>();
+			
+			System.out.println(memberban.get("userid"));
+			 // 세션에 관리자 판단 여부 로직
+			if (memberban.get("supervisor") == null || !memberban.get("supervisor").equals("Y")) {
+				result.put("success",false);
+				result.put("message", "관리자 권한이 필요합니다.");
+				return result;
 		    }
 			
+			// 회원 DB
+			// 1. 유저 상태 조회, 탈퇴된 회원이면 존재하지않는다고 노출
+		    Member targetUser = loginService.getMember(memberban.get("userid"));
+		    if (targetUser == null || targetUser.getIs_deleted() == 'Y') {
+		        result.put("success", false);
+		        result.put("message", "해당 유저가 존재하지 않습니다.");
+		        return result;
+		    }
+			// 회원 밴 처리
+		    if(memberban.get("banned").equals("Y")) {
+		    	loginService.ban(memberban.get("userid"));
+		    	result.put("success", true);
+		    	result.put("message", "해당 유저 밴 처리에 성공하였습니다.");
+		    }else if(memberban.get("banned").equals("N")) {
+		    	loginService.unban(memberban.get("userid"));
+		    	result.put("success", true);
+		    	result.put("message", "해당 유저 해제 처리에 하였습니다.");
+		    }
+		    else{
+		    	result.put("success", false);
+		    	result.put("message", "알 수 없는 오류로 처리 실패했습니다.");
+		    }
 			
-			// 유저 삭제
-			@PostMapping("unregister")
-			@ResponseBody
-			public Map<String, Object> delete(@RequestBody Map<String, Object> params) {
-				Map<String, Object> result = new HashMap<String, Object>();
-				String userid = (String) params.get("userid");
-				String sotreUserid = (String) params.get("sotreUserid");
-				
-			    if (!userid.equals(sotreUserid)) {
-			        result.put("error", true);
-			        result.put("message", "로그인이 필요합니다.");
-			        return result;
-			    }
-
-			    boolean success = loginService.delete(userid);
-
-			    if (success) {
-			        result.put("error", false);
-			        result.put("message", "메인 화면으로 이동합니다.");
-			    } else {
-			        result.put("error", true);
-			        result.put("message", "회원 탈퇴 처리 실패");
-			    }
-				return result;
+			return result;
 			}
+		
+		
+		
+		// 유저 아이디 찾기
+		@PostMapping("findMemberId")
+		public Map<String, Object> findMemberId(@RequestBody Map<String, String> param) {
+			Map<String, Object> result = new HashMap<>();
 			
+			String username = param.get("username");
+			String phone_no = param.get("phone_no");
+			String userid = param.get("userid");
+		   
+			Member memberDB = loginService.findMember(username, phone_no, userid);
 			
-			// 유저 리스트
-			@GetMapping("list")
-			@ResponseBody
-			public Map<String, Object> list(String pageNo, String size, String searchValue) {
-				Map<String, Object>result = new HashMap<>();
-				
-				result.put("pageResponse",loginService.list(searchValue,
-						Util.parseInt(pageNo, 1),
-						Util.parseInt(size, 10)
-						));
-				return result;
+			if (memberDB == null) {
+				result.put("existUserId", false);
+			return result;
 			}
+		
+			result.put("existUserId", true);
+			result.put("userid", memberDB.getUserid());
+			return result; 
+		}
+		
+		
+		// 유저 아이디 찾기
+		@PostMapping("reMemberPw")
+		public Map<String, Object> reMemberPw(@RequestBody Map<String, String> param) {
+			Map<String, Object> status = new HashMap<>();
 			
-			//유저 밴처리
-			@PostMapping("ban")
-			@ResponseBody
-			public Map<String, Object> ban(@RequestBody Map<String, String> memberban){
-				Map<String, Object> result = new HashMap<String, Object>();
-				
-				System.out.println(memberban.get("userid"));
-				 // 세션에 관리자 판단 여부 로직
-				if (memberban.get("supervisor") == null || !memberban.get("supervisor").equals("Y")) {
-					result.put("success",false);
-					result.put("message", "관리자 권한이 필요합니다.");
-					return result;
-			    }
-				
-				// 회원 DB
-				// 1. 유저 상태 조회, 탈퇴된 회원이면 존재하지않는다고 노출
-			    Member targetUser = loginService.getMember(memberban.get("userid"));
-			    if (targetUser == null || targetUser.getIs_deleted() == 'Y') {
-			        result.put("success", false);
-			        result.put("message", "해당 유저가 존재하지 않습니다.");
-			        return result;
-			    }
-				// 회원 밴 처리
-			    if(memberban.get("banned").equals("Y")) {
-			    	loginService.ban(memberban.get("userid"));
-			    	result.put("success", true);
-			    	result.put("message", "해당 유저 밴 처리에 성공하였습니다.");
-			    }else if(memberban.get("banned").equals("N")) {
-			    	loginService.unban(memberban.get("userid"));
-			    	result.put("success", true);
-			    	result.put("message", "해당 유저 해제 처리에 하였습니다.");
-			    }
-			    else{
-			    	result.put("success", false);
-			    	result.put("message", "알 수 없는 오류로 처리 실패했습니다.");
-			    }
-				
-				return result;
-				}
+			String userid = param.get("userid");
+			String repasswd = param.get("repasswd");
+		   
+			String hash = passwordEncoder.encode(repasswd);
 			
+			boolean result = loginService.rePasswd(userid, hash);
 			
-			
-			// 유저 아이디 찾기
-			@PostMapping("findMemberId")
-			public Map<String, Object> findMemberId(@RequestBody Map<String, String> param) {
-				Map<String, Object> result = new HashMap<>();
-				
-				String username = param.get("username");
-				String phone_no = param.get("phone_no");
-				String userid = param.get("userid");
-			   
-				Member memberDB = loginService.findMember(username, phone_no, userid);
-				
-				if (memberDB == null) {
-					result.put("existUserId", false);
-				return result;
-				}
-			
-				result.put("existUserId", true);
-				result.put("userid", memberDB.getUserid());
-				return result; 
+			if (result) {
+				status.put("existUserId", true);
+				return status;
 			}
-			
-			
-			// 유저 아이디 찾기
-			@PostMapping("reMemberPw")
-			public Map<String, Object> reMemberPw(@RequestBody Map<String, String> param) {
-				Map<String, Object> status = new HashMap<>();
-				
-				String userid = param.get("userid");
-				String repasswd = param.get("repasswd");
-			   
-				String hash = passwordEncoder.encode(repasswd);
-				
-				boolean result = loginService.rePasswd(userid, hash);
-				
-				if (result) {
-					status.put("existUserId", true);
-					return status;
-				}
-			
-					status.put("existUserId", false);
-				return status; 
-				}
+		
+				status.put("existUserId", false);
+			return status; 
+			}
 		
 }
