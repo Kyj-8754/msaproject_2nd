@@ -216,6 +216,7 @@
 			})
 	}
 
+	// 페이지 로딩시 로그인 되어있다면 해당 정보를 form에 입력
 	onMounted(() => {
 		if (memberStore.authenticated) {
 			form.writer = memberStore.userid

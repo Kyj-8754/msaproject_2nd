@@ -68,7 +68,7 @@
 	phone_no: ''
 	});
 
-	// 비밀번호 재설정용용
+	// 비밀번호 재설정용
 	const findRePwForm = reactive({
 		userid: '',
 		repasswd: '',
@@ -161,38 +161,35 @@
 
 	// 비밀번호 재설정 로직
 	const RePassword = () =>{
+		
 		const userid = findPwForm.userid;
 		const repasswd = findRePwForm.repasswd;
 		const repasswd2 = findRePwForm.repasswd2;
 		
-		
-
 		if(!checkPasswordMatch) {
 			alert("비밀번호를 확인해주세요."); 
 			return;
 		}
 
-	
-
 		axios.post('/api/member/reMemberPw', {userid, repasswd, repasswd2})
 		.then(res => {
-		if (res.data.existUserId) {
-			alert("다시 로그인 해주세요")
-			closeModal()
-		} else {
-			alert("재설정에 실패했습니다.")
-		}
+			if (res.data.existUserId) {
+				alert("다시 로그인 해주세요")
+				closeModal()
+			} else {
+				alert("재설정에 실패했습니다.")
+			}
 		})
 		.catch(err => {
-		console.error('오류', err)
-		alert('오류가 발생했습니다.')
+			console.error('오류', err)
+			alert('오류가 발생했습니다.')
 		})
 	}
 
 
 // 내부 전환 함수
 const goTofindMember = () => mode.value = 'findId'; // 아이디 찾기
-const closeModal = () => emit('close');
+const closeModal = () => emit('close'); // 모달창 닫기
 </script>
 
 <style lang="css">

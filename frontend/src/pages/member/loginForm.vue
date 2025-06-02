@@ -38,24 +38,26 @@
 	const currentRoute = useRoute(); 
 	const fromname = currentRoute.query.fromname;
 
+	// 로그인 담아주는 form
 	const info = reactive({userid : "", passwd : ""});
 
+	// 성공시 콜백
 	const successCallback = () => {
 		if (fromname) router.push({ path: fromname})
 		else router.push({name:'Home'})
 	}
-
+	// 실패시 콜백
 	const faileCallback = () =>{
 		alert('아이디 또는 비밀번호를 확인 해 주세요');
 		info.passwd = "";
 		document.getElementById("passwd")?.focus();
 	}
-
+	// 로그인 서비스 시작
 	const login = () => {
 		Login(info.userid, info.passwd, successCallback, faileCallback);
 	}
 
-	// 아이디, 비밀번호 찾는 로직 꺼내오기기
+	// 아이디, 비밀번호 찾는 로직 꺼내오기
 	import FindMember from '@/pages/member/findMember.vue'
 	const isModalOpen = ref(false)
 </script>

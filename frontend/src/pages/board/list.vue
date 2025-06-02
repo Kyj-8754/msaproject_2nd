@@ -93,6 +93,7 @@
 	const router = useRouter() // 보낼 경로
 	const route = useRoute() // 현재 경로
 	const sizes = [10, 30, 90, 100] // 건수 사이즈 
+
 	// 초기값 설정
 	const pageResponse = reactive ({ 
 		list: [],
@@ -121,6 +122,7 @@
 		}
 	})
 	
+	// 페이징 기능, 누르면 해당 페이지 이동하도록 구현현
 	const pageRange = computed(() => {
 	  const range = []
 	  for (let i = pageResponse.startPage; i <= pageResponse.endPage; i++) {
@@ -135,6 +137,7 @@
 	{ immediate: true }
 	)
 	
+	// 값 검색시 넘어가는 로직
 	function searchID() {
 		router.push({
 			name: 'Board_List',
@@ -167,23 +170,23 @@
 
 
 <style scoped>
-.table-fixed {
-  table-layout: fixed;
-  word-break: break-word;
-}
+	.table-fixed {
+		table-layout: fixed;
+		word-break: break-word;
+	}
 
-.cell {
-  max-width: 200px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+	.cell {
+		max-width: 200px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
 
-.cell a {
-  display: inline-block;
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+	.cell a {
+		display: inline-block;
+		width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
 </style>

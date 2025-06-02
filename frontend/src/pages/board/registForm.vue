@@ -45,6 +45,8 @@
 
   const router = useRouter()
   const memberStore = useMemberStore();
+
+  // json으로 보내기 위한 form
   const form = reactive({
 	title : '',
 	writer : '',
@@ -52,26 +54,27 @@
 	content : '',
   })
 
+  // 게시물 등록 이벤트
   function regist() {
-  const confirmRegist = confirm("게시물 등록하시겠습니까?")
-  if (!confirmRegist) return
+	const confirmRegist = confirm("게시물 등록하시겠습니까?")
+	if (!confirmRegist) return
 
-  axios.post('/api/board/regist', form)
-    .then(res => {
-      if (!res.data.error) {
-		  alert(res.data.message)
-		  router.push({ name: 'Board_List'
-			}) // or 직접 URL로 이동도 가능
-      } else {
-        alert(res.data.message)
-      }
-    })
-    .catch(err => {
-      console.error('등록 실패', err)
-      alert('등록 중 오류가 발생했습니다.')
-    })
+	axios.post('/api/board/regist', form)
+	.then(res => {
+		if (!res.data.error) {
+			alert(res.data.message)
+			router.push({ name: 'Board_List'}) 
+		} else {
+		alert(res.data.message)
+		}
+	})
+	.catch(err => {
+		console.error('등록 실패', err)
+		alert('등록 중 오류가 발생했습니다.')
+	})
 }
 
+// 로그인 되어있다면 form에 해당갑 집어 넣도록
 onMounted(() => {
   if (memberStore.authenticated) {
     form.writer = memberStore.userid

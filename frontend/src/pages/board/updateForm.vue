@@ -58,17 +58,16 @@
 	import { useRoute, useRouter } from 'vue-router'
 	import { useMemberStore } from '@/stores/member'
 
-	const memberStore = useMemberStore();
-	const router = useRouter()
-	const route = useRoute()
-	const bno = route.query.bno
-	const boardDB = ref({ list: [] })
+	const memberStore = useMemberStore(); // 로그인 정보
+	const router = useRouter() // api 경로 보내는 용도
+	const route = useRoute() // 현재 url 경로 가져오는 용도
+	const bno = route.query.bno // 현재 url에 bno 파라미터
+	const boardDB = ref({ list: [] }) // 데이터 베이스에서 담아온 값 담아주는 용도
 
+	// 데이터 베이스에서 bno에 따른 게시물 가져와서 로딩
 	onMounted(() => {
-	axios.get('/api/board/updateForm', { params: { bno }})
-	.then(res => {
-	boardDB.value = res.data.boardDB
-		})
+		axios.get('/api/board/updateForm', { params: { bno }})
+		.then(res => {boardDB.value = res.data.boardDB})
 	})
 
 	// 업데이트

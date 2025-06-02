@@ -55,15 +55,18 @@ import { logoutProcess } from '@/util/AuthUtil'
 import logoImage from '@/assets/image/bannerlogo.jpg';
 import { useRouter } from 'vue-router'
 
+// 보내는 용도 라우터
 const router = useRouter()
+
+// pinia를 이용한 상태 관리
 const memberStore = useMemberStore();
+
+// 로그아웃 
 const logout = () => {
   logoutProcess(() => {
     router.push({ name: 'Home' });
   });
 }
-
-
 
 // 남은 시간 (초 단위로 관리)
 const TIMEOUT_SECONDS = 600
@@ -71,7 +74,10 @@ const remainingTime = ref(TIMEOUT_SECONDS)
 
 // 타이머 ID 저장용
 let countdownTimer = null
-let activityEvents = ['mousemove', 'keydown', 'mousedown', 'touchstart'] // 키입력, 마우스 버튼클릭, 스크린터치감지
+
+
+// 키입력, 마우스 버튼클릭, 스크린터치감지
+let activityEvents = ['mousemove', 'keydown', 'mousedown', 'touchstart'] 
 
 // 타이머 초기화 함수
 const resetTimer = () => {
@@ -95,30 +101,33 @@ const startTimer = () => {
 // 이벤트 리스너 등록 및 제거
 const activityListener = () => resetTimer()
 
+// 로그인 되면 이벤트 시작하는 함수
 const addActivityListeners = () => {
   activityEvents.forEach(event =>
     window.addEventListener(event, activityListener)
   )
 }
 
+// 로그아웃 시 이벤트 제거하는 함수
 const removeActivityListeners = () => {
   activityEvents.forEach(event =>
     window.removeEventListener(event, activityListener)
   )
 }
 
-// 컴포넌트 수명주기
+// 시작
 onMounted(() => {
   addActivityListeners()
   startTimer()
 })
 
+// 끝
 onBeforeUnmount(() => {
   clearInterval(countdownTimer)
   removeActivityListeners()
 })
 
-// 화면 출력용 계산값
+// 화면 출력용 함수
 const remainingMinutes = computed(() => Math.floor(remainingTime.value / 60))
 const remainingSeconds = computed(() => remainingTime.value % 60)
 </script>
